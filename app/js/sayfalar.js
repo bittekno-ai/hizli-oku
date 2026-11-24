@@ -5,11 +5,6 @@
   const el = u.el;
   const sayfa = {};
 
-  const GRUPLAR = [
-    { baslik: 'Ölçüm', egz: ['test', 'okuma'] },
-    { baslik: 'Göz ve dikkat', egz: ['schulte', 'burdon', 'renk', 'kelimeavi', 'takip', 'cevresel', 'beliren', 'flas'] },
-    { baslik: 'Okuma antrenmanı', egz: ['piramit', 'rehber', 'tarama', 'anlama', 'rsvp'] },
-  ];
 
   function kutucuk(etiket, deger, alt) {
     return el('div', { class: 'kutucuk' }, el('div', { class: 'kutucuk-etiket', text: etiket }), el('div', { class: 'kutucuk-deger', text: deger }), alt ? el('div', { class: 'kutucuk-alt', text: alt }) : null);
@@ -29,42 +24,84 @@
     return { bas, dongu, donguBas, hafta, buHafta, gunlukGunler };
   }
 
+  // Ana sayfadaki "odak akışı" görseli: satırlar merkezdeki odak noktasına akar.
+  function odakGorseli() {
+    const kap = el('div', { class: 'odak-gorsel', 'aria-hidden': 'true' });
+    const ys = [40, 78, 116, 154, 192];
+    const yollar = ys.map((y, i) => `M10 ${y} C 120 ${y}, 170 ${116 + (y - 116) * 0.25}, 250 116`);
+    kap.innerHTML =
+      `<svg viewBox="0 0 400 232">` +
+      yollar.map((d) => `<path d="${d}" class="o-iz"/>`).join('') +
+      yollar.map((d, i) => `<path d="${d}" class="o-satir" style="--i:${i}"/>`).join('') +
+      `<circle cx="262" cy="116" r="34" class="o-halka"/><circle cx="262" cy="116" r="34" class="o-halka h2"/>` +
+      `<circle cx="262" cy="116" r="12" class="o-merkez"/>` +
+      `<path d="M300 92 C 340 100, 360 108, 392 108 M300 140 C 340 132, 360 124, 392 124" class="o-iz"/>` +
+      `</svg>`;
+    return kap;
+  }
+
+  function kategoriBolumu() {
+    return [
+      el('div', { class: 'bolum-bas' }, el('h2', { text: 'Egzersiz kategorileri' }), el('a', { href: '#/egzersizler', text: 'Tümü →' })),
+      el('div', { class: 'kat-izgara' }, HO.kategoriler.map((k, i) => sayfa.kategoriKarti(k, i))),
+    ];
+  }
+
   sayfa.ana = function (kap) {
     const d = HO.depo;
     if (!d.sonuclar().length) {
       kap.replaceChildren(
         el(
           'section',
-          { class: 'kart karsilama' },
-          el('h1', { text: 'Hızlı Oku’ya hoş geldiniz' }),
-          el('p', { text: 'Bu program her gün 15–20 dakikalık bir okuma antrenmanı sunar. Plan 4 hafta, haftada 5 gündür.' }),
-          el('p', { text: 'İlk adım bir seviye testi: kısa bir metni kendi hızınızda okuyup 5 soruyu cevaplayacaksınız. Antrenmanın hızı bu sonuca göre ayarlanır.' }),
-          el('p', { class: 'soluk', text: 'Sonuçlarınız yalnız bu cihazda saklanır.' }),
-          el('div', { class: 'dugmeler' }, el('a', { class: 'dugme ikincil', href: '#/egzersizler', text: 'Egzersizlere göz at' }), el('a', { class: 'dugme ana buyuk', href: '#/egzersiz/test', text: 'Seviye testiyle başla' }))
-        )
+          { class: 'karsilama-alan' },
+          el(
+            'div',
+            null,
+            el('div', { class: 'adim-yazi', text: 'Ücretsiz okuma antrenmanı' }),
+            el('h1', null, 'Daha hızlı oku, ', el('em', { text: 'anlayarak' }), ' oku.'),
+            el('p', { text: 'Günde 15–20 dakikalık antrenman: göz hareketleri, dikkat, görüş alanı ve okuma teknikleri. Hızınız her zaman anlama sorularıyla birlikte ölçülür.' }),
+            el('p', { class: 'soluk', text: 'İlk adım kısa bir seviye testi. Sonuçlarınız yalnız bu cihazda saklanır.' }),
+            el('div', { class: 'dugmeler' }, el('a', { class: 'dugme ana buyuk', href: '#/egzersiz/test', text: 'Seviye testiyle başla' }), el('a', { class: 'dugme ikincil', href: '#/egzersizler', text: 'Egzersizlere göz at' }))
+          ),
+          odakGorseli()
+        ),
+        ...kategoriBolumu()
       );
       return;
     }
     const plan = planDurumu();
     const bugunYapildi = plan.gunlukGunler.has(u.dayKey());
     const adimlar = HO.gunlukAdimlar();
-    const toplamDk = adimlar.length * 2.5;
-    const kartlar = [];
-    kartlar.push(
-      el(
-        'section',
-        { class: 'kart gunluk-kart' },
-        el('div', { class: 'adim-yazi', text: `${plan.hafta}. hafta${plan.dongu ? ` · ${plan.dongu + 1}. tur` : ''} · Bu hafta ${plan.buHafta}/5 gün` }),
-        el('h1', { text: bugunYapildi ? 'Bugünün antrenmanı tamamlandı' : 'Bugünün antrenmanı' }),
-        el('ol', { class: 'adim-listesi' }, adimlar.map((a) => el('li', null, HO.egz[a.egz].ad, el('span', { text: HO.egz[a.egz].sure })))),
-        el('p', { class: 'soluk', text: `Yaklaşık ${Math.round(toplamDk)} dakika. İstediğiniz adımı atlayabilirsiniz.` }),
-        el('div', { class: 'dugmeler' }, el('a', { class: 'dugme ' + (bugunYapildi ? 'ikincil' : 'ana buyuk'), href: '#/gunluk', text: bugunYapildi ? 'Yeniden yap' : 'Antrenmanı başlat' }))
-      )
-    );
     const etkili = d.sonEtkiliHiz();
     const sonTest = d.son('test');
     kap.replaceChildren(
-      ...kartlar,
+      el(
+        'section',
+        { class: 'karsilama-alan' },
+        el(
+          'div',
+          null,
+          el('div', { class: 'adim-yazi', text: `${plan.hafta}. hafta${plan.dongu ? ` · ${plan.dongu + 1}. tur` : ''} · Bu hafta ${plan.buHafta}/5 gün` }),
+          el('h1', { text: bugunYapildi ? 'Bugünkü antrenmanınız tamam.' : 'Bugünkü antrenmanınız hazır.' }),
+          el('p', { text: bugunYapildi ? 'İsterseniz tekrar yapabilir ya da tek tek egzersiz seçebilirsiniz.' : `${adimlar.length} adım, yaklaşık ${Math.round(adimlar.length * 2.5)} dakika. İstediğiniz adımı atlayabilirsiniz.` }),
+          el('div', { class: 'dugmeler' }, el('a', { class: 'dugme ' + (bugunYapildi ? 'ikincil' : 'ana buyuk'), href: '#/gunluk', text: bugunYapildi ? 'Yeniden yap' : 'Antrenmanı başlat' }))
+        ),
+        odakGorseli()
+      ),
+      el(
+        'section',
+        { class: 'kart gunluk-kart' },
+        el('h2', { text: 'Bugünün adımları' }),
+        el(
+          'ol',
+          { class: 'adim-listesi zengin' },
+          adimlar.map((a) => {
+            const ex = HO.egz[a.egz];
+            const k = HO.kategoriBul(a.egz) || HO.kategoriBul(ex.taban ? a.egz : '');
+            return el('li', { class: k ? 'kat-' + k.id : '' }, HO.ikon(ex), el('span', { class: 'adim-ad' }, ex.ad, el('small', { text: ex.sure })));
+          })
+        )
+      ),
       el(
         'section',
         { class: 'kutucuklar' },
@@ -72,29 +109,53 @@
         kutucuk('Seri', String(d.seri()), 'gün üst üste'),
         kutucuk('Rehber hedef hızı', String(d.rehberHedef()), 'kelime/dk'),
         kutucuk('Son seviye testi', sonTest ? u.fmtDate(sonTest.gun) : '-', d.testGerekli() ? 'Yeni test zamanı' : 'Haftaya tekrar')
-      )
+      ),
+      ...kategoriBolumu()
+    );
+    kap.querySelectorAll('.kutucuk').forEach((k, i) => k.style.setProperty('--sira', i));
+  };
+
+  // Kategori kartı (Egzersizler sayfası ve ana sayfa).
+  sayfa.kategoriKarti = function (k, i) {
+    return el(
+      'a',
+      { class: 'kat-kart isikli kat-' + k.id, href: '#/kategori/' + k.id, style: { '--sira': i } },
+      HO.katGorsel(k.id, 'kat-gorsel'),
+      el('span', { class: 'kat-yazi' }, el('strong', { text: k.ad }), el('span', { text: k.kisa }), el('small', { text: k.egz.length + ' egzersiz' })),
+      el('span', { class: 'kat-ok', 'aria-hidden': 'true', text: '→' })
     );
   };
 
   sayfa.egzersizler = function (kap) {
     kap.replaceChildren(
-      el('h1', { text: 'Egzersizler' }),
-      el('p', { class: 'soluk', text: 'Günlük antrenman bunları sırayla yaptırır. Buradan tek tek de çalışabilirsiniz.' }),
-      ...GRUPLAR.map((g) =>
-        el(
-          'section',
-          { class: 'egz-grup' },
-          el('h2', { text: g.baslik }),
-          el(
-            'div',
-            { class: 'egz-kartlar' },
-            g.egz.map((id) => {
-              const ex = HO.egz[id];
-              return el('a', { class: 'egz-kart', href: '#/egzersiz/' + id }, el('strong', { text: ex.ad }), el('span', { text: ex.kisa }), el('small', { text: ex.sure }));
-            })
-          )
-        )
-      )
+      el('header', { class: 'sayfa-bas' }, el('h1', { text: 'Egzersizler' }), el('p', { class: 'soluk', text: 'Günlük antrenman bunları sırayla yaptırır. Buradan tek tek de çalışabilirsiniz.' })),
+      el('div', { class: 'kat-izgara' }, HO.kategoriler.map((k, i) => sayfa.kategoriKarti(k, i)))
+    );
+  };
+
+  sayfa.egzKarti = function (ex, i, katId) {
+    return el(
+      'a',
+      { class: 'egz-kart isikli kat-' + katId, href: '#/egzersiz/' + ex.id, style: { '--sira': i } },
+      HO.ikon(ex),
+      el('span', { class: 'egz-yazi' }, el('strong', { text: ex.ad }), el('span', { text: ex.kisa }), el('small', { text: ex.sure + (ex.flas ? ' · yanıp sönen öğe' : '') }))
+    );
+  };
+
+  sayfa.kategori = function (kap, id) {
+    const k = HO.kategoriler.find((x) => x.id === id);
+    if (!k) {
+      location.hash = '#/egzersizler';
+      return;
+    }
+    kap.replaceChildren(
+      el(
+        'header',
+        { class: 'kat-bas kat-' + k.id },
+        el('a', { class: 'geri-link', href: '#/egzersizler', text: '← Tüm kategoriler' }),
+        el('div', { class: 'kat-bas-ic' }, el('div', null, el('h1', { text: k.ad }), el('p', { class: 'soluk', text: k.kisa })), HO.katGorsel(k.id, 'kat-bas-gorsel'))
+      ),
+      el('div', { class: 'egz-kartlar' }, k.egz.map((id2, i) => sayfa.egzKarti(HO.egz[id2], i, k.id)))
     );
   };
 
@@ -239,6 +300,7 @@
         secim('boyut', 'Okuma yazı boyutu', [[16, 'Küçük'], [19, 'Orta'], [22, 'Büyük'], [26, 'Çok büyük']], a.yaziBoyu, uygula('yaziBoyu')),
         secim('aralik', 'Satır aralığı', [[1.4, 'Dar'], [1.7, 'Normal'], [2, 'Geniş']], a.satirAraligi, uygula('satirAraligi')),
         secim('tema', 'Tema', [['sistem', 'Sistemle aynı'], ['acik', 'Açık'], ['koyu', 'Koyu']], a.tema, uygula('tema')),
+        secim('hareket', 'Arayüz hareketleri', [['sistem', 'Sistem ayarına göre'], ['acik', 'Açık'], ['az', 'Azaltılmış']], a.hareket || 'sistem', uygula('hareket')),
         ornek
       ),
       el(
@@ -278,7 +340,7 @@
         { class: 'kart' },
         el('h2', { text: 'Hakkında' }),
         el('p', { text: 'Hızlı Oku ücretsiz ve açık kaynak bir okuma antrenman programıdır. Okuma hızı her zaman anlama sorularıyla birlikte ölçülür. Etkili hız = okuma hızı × anlama oranı.' }),
-        el('p', { class: 'soluk', text: 'Okuma metinleri bu program için özgün olarak yazılmıştır. Sürüm 0.3.0' })
+        el('p', { class: 'soluk', text: 'Okuma metinleri bu program için özgün olarak yazılmıştır. Sürüm 0.4.0' })
       )
     );
   };

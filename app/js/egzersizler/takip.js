@@ -107,7 +107,7 @@
       ctx.listen(window, 'resize', boyutla);
 
       const stil = getComputedStyle(document.documentElement);
-      const renkNokta = stil.getPropertyValue('--vurgu2').trim() || '#e07a2e';
+      const renkNokta = stil.getPropertyValue('--odak').trim() || '#e0702e';
       const renkIz = stil.getPropertyValue('--cizgi').trim() || '#ccc';
 
       const periyot = { yavas: 9000, orta: 6000, hizli: 3800 }[s.hiz] * (YOLLAR[s.desen] ? 2 : 1);

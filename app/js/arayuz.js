@@ -11,6 +11,9 @@
     kok.style.setProperty('--okuma-boyu', a.yaziBoyu + 'px');
     kok.style.setProperty('--okuma-aralik', a.satirAraligi);
     kok.dataset.tema = a.tema;
+    kok.dataset.hareket = a.hareket || 'sistem';
+    const sistemAz = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    kok.classList.toggle('hareket-yok', a.hareket === 'az' || ((a.hareket || 'sistem') === 'sistem' && sistemAz));
   };
 
   // Basit pencere (modal). dugmeler: [{yazi, deger, tur:'ana'|'ikincil'|'tehlike'}]
@@ -41,6 +44,27 @@
     });
     if (ctx) ctx.onAbort(() => kapat && kapat(null));
     return p;
+  };
+
+  // Sonuç sayılarını sıfırdan sayarak gösterir (hareket kapalıysa doğrudan yazar).
+  ui.sayarakGoster = function (dd, yazi) {
+    const m = /^(\d{1,3}(?:\.\d{3})*|\d+)(,\d+)?/.exec(yazi);
+    if (!m || /^[:/]/.test(yazi.slice(m[0].length)) || document.documentElement.classList.contains('hareket-yok')) {
+      dd.textContent = yazi;
+      return;
+    }
+    const hedef = Number(m[1].replace(/\./g, '') + (m[2] ? '.' + m[2].slice(1) : ''));
+    const ondalik = m[2] ? m[2].length - 1 : 0;
+    const kuyruk = yazi.slice(m[0].length);
+    const t0 = performance.now();
+    const adim = (t) => {
+      const k = Math.min(1, (t - t0) / 700);
+      const v = hedef * (1 - Math.pow(1 - k, 3));
+      dd.textContent = v.toLocaleString('tr-TR', { minimumFractionDigits: ondalik, maximumFractionDigits: ondalik }) + kuyruk;
+      if (k < 1) requestAnimationFrame(adim);
+      else dd.textContent = yazi;
+    };
+    requestAnimationFrame(adim);
   };
 
   ui.onay = (soru, evet = 'Evet', hayir = 'Vazgeç') =>
@@ -251,7 +275,8 @@
       kap.replaceChildren(
         el(
           'section',
-          { class: 'kart tanitim' },
+          { class: 'kart tanitim' + (HO.kategoriBul && HO.kategoriBul(ex.id) ? ' kat-' + HO.kategoriBul(ex.id).id : '') },
+          HO.ikon ? HO.ikon(ex) : null,
           o.adimYazi ? el('div', { class: 'adim-yazi', text: o.adimYazi }) : null,
           el('h1', { text: ex.ad }),
           el('ol', { class: 'nasil' }, ex.nasil.map((n) => el('li', { text: n }))),
@@ -305,7 +330,7 @@
       }
 
       // 4. Kayıt ve sonuç
-      const kayit = HO.depo.sonucEkle(ex.id, sonuc);
+      const kayit = HO.depo.sonucEkle(ex.kayitId || ex.id, sonuc);
       const satirlar = ex.ozet(kayit);
       const notlar = ex.notlar ? ex.notlar(kayit) : [];
       const devam = el('button', { class: 'dugme ana buyuk', text: gunluk ? 'Sonraki adım' : 'Egzersizlere dön' });
@@ -314,8 +339,17 @@
         el(
           'section',
           { class: 'kart sonuc' },
+          el('div', { class: 'sonuc-isaret', 'aria-hidden': 'true', text: '✓' }),
           el('h1', { text: ex.ad + ': sonuç' }),
-          el('dl', { class: 'olcumler' }, satirlar.map(([k, v]) => [el('dt', { text: k }), el('dd', { text: v })])),
+          el(
+            'dl',
+            { class: 'olcumler' },
+            satirlar.map(([k, v], i) => {
+              const dd = el('dd');
+              ui.sayarakGoster(dd, v);
+              return el('div', { class: 'olcum', style: { '--sira': i } }, el('dt', { text: k }), dd);
+            })
+          ),
           notlar.map((n) => el('p', { class: 'not', text: n })),
           el('div', { class: 'dugmeler' }, tekrar, devam)
         )
@@ -328,7 +362,10 @@
       });
       await ui.gozMolasiGerekirse(ctx);
       if (ne === 'tekrar') continue;
-      if (!gunluk) location.hash = '#/egzersizler';
+      if (!gunluk) {
+        const k = HO.kategoriBul && HO.kategoriBul(ex.id);
+        location.hash = k ? '#/kategori/' + k.id : '#/egzersizler';
+      }
       return { durum: 'bitti', sonuc: kayit };
     }
   };

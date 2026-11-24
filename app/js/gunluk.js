@@ -22,16 +22,16 @@
       { egz: 'kelimeavi', secenek: { tur: 3 } },
     ][d % 4];
     const gorus = [
-      { egz: 'piramit', secenek: { yon: d % 4 === 0 ? 'yukaridan' : 'asagidan', hiz: 'oto', sure: 90, kaynak: 'program' } },
-      { egz: 'beliren', secenek: { desen: ['yatay', 'capraz', 'rastgele'][d % 3], adet: 50 } },
-      { egz: 'cevresel', secenek: { yon: ['yatay', 'dikey', 'capraz'][d % 3], deneme: 15 } },
+      { egz: d % 4 === 0 ? 'piramit-yukaridan' : 'piramit-asagidan', secenek: { hiz: 'oto', sure: 90, kaynak: 'program' } },
+      { egz: 'beliren-' + ['yatay', 'capraz', 'rastgele'][d % 3], secenek: { adet: 50 } },
+      { egz: 'cevresel-' + ['yatay', 'dikey', 'capraz'][d % 3], secenek: { deneme: 15 } },
     ][d % 3];
     adimlar.push(
       isinma,
-      { egz: 'takip', secenek: { desen: ['yatay-sonsuzluk', 'yatay-zigzag', 'dikey-sonsuzluk', 'kum-saati', 'dikey-zigzag', 'sicrama'][d % 6], sure: 60 } },
-      { egz: 'flas', secenek: { tur: ['rakam', 'kelime', 'harf', 'grup'][d % 4], uzunluk, deneme: 20 } },
+      { egz: 'takip-' + ['yatay-sonsuzluk', 'yatay-zigzag', 'dikey-sonsuzluk', 'kum-saati', 'dikey-zigzag', 'sicrama'][d % 6], secenek: { sure: 60 } },
+      { egz: 'flas-' + ['rakam', 'kelime', 'harf', 'grup'][d % 4], secenek: { uzunluk, deneme: 20 } },
       gorus,
-      { egz: 'rehber', secenek: { mod: ['soluk', 'gizli', 'satir', 'silinen', 'dar'][d % 5], hiz: 'oto', kaynak: 'program' } },
+      { egz: 'rehber-' + ['soluk', 'gizli', 'satir', 'silinen', 'dar'][d % 5], secenek: { hiz: 'oto', kaynak: 'program' } },
       { egz: 'tarama', secenek: { adet: 2 } },
       { egz: 'okuma', secenek: { kaynak: 'program' } }
     );

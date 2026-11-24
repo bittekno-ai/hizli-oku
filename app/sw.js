@@ -1,11 +1,18 @@
 'use strict';
 // Çevrimdışı kullanım için önbellek. Yeni sürümde SURUM değiştirilir.
-const SURUM = 'hizlioku-0.3.0';
+const SURUM = 'hizlioku-0.4.0';
 const DOSYALAR = [
   './',
   'index.html',
   'manifest.webmanifest',
   'css/stil.css',
+  'css/tasarim.css',
+  'yazitipi/noto-sans-latin-400-normal.woff2',
+  'yazitipi/noto-sans-latin-600-normal.woff2',
+  'yazitipi/noto-sans-latin-700-normal.woff2',
+  'yazitipi/noto-sans-latin-ext-400-normal.woff2',
+  'yazitipi/noto-sans-latin-ext-600-normal.woff2',
+  'yazitipi/noto-sans-latin-ext-700-normal.woff2',
   'ikonlar/ikon-192.png',
   'ikonlar/ikon-512.png',
   'icerik/kelimeler.js',
@@ -15,6 +22,8 @@ const DOSYALAR = [
   'js/depo.js',
   'js/arayuz.js',
   'js/grafik.js',
+  'js/ikonlar.js',
+  'js/gorseller.js',
   'js/gunluk.js',
   'js/sayfalar.js',
   'js/uygulama.js',
@@ -33,6 +42,7 @@ const DOSYALAR = [
   'js/egzersizler/kelimeavi.js',
   'js/egzersizler/cevresel.js',
   'js/metinlerim.js',
+  'js/egzersizler/turevler.js',
 ];
 
 self.addEventListener('install', (e) => {

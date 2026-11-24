@@ -1,6 +1,6 @@
 # Hızlı Oku
 
-Ücretsiz ve açık kaynak bir okuma antrenman programı. Tarayıcıda (Mac, Windows, telefon) ve masaüstü uygulaması olarak çalışır. Okuma hızı her zaman anlama sorularıyla birlikte ölçülür: **etkili hız = dakikadaki kelime × anlama oranı**.
+Ücretsiz ve açık kaynak bir okuma antrenman programı. Lise öğrencileri ve yetişkinler için; 6 kategoride 33 egzersiz. Tarayıcıda (Mac, Windows, telefon) ve masaüstü uygulaması olarak çalışır. Okuma hızı her zaman anlama sorularıyla birlikte ölçülür: **etkili hız = dakikadaki kelime × anlama oranı**.
 
 ## İçindekiler
 
@@ -67,4 +67,4 @@ Paketler imzasız olduğu için ilk açılışta Mac ve Windows güvenlik uyarı
 
 ## Lisans
 
-MIT. Ayrıntı: `LICENSE`.
+MIT. Ayrıntı: `LICENSE`. Yazı tipi Noto Sans, SIL Open Font License 1.1 (`app/yazitipi/OFL.txt`).

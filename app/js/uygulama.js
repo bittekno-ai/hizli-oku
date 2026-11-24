@@ -11,9 +11,10 @@
     const kap = document.getElementById('ana');
     const yol = location.hash.replace(/^#\/?/, '').split('/');
     const bolum = yol[0] || '';
+    document.body.dataset.sayfa = bolum || 'ana';
     document.querySelectorAll('[data-nav]').forEach((a) => {
       const hedef = a.dataset.nav;
-      a.classList.toggle('secili', hedef === bolum || (hedef === 'egzersizler' && bolum === 'egzersiz'));
+      a.classList.toggle('secili', hedef === bolum || (hedef === 'egzersizler' && (bolum === 'egzersiz' || bolum === 'kategori')));
     });
     document.getElementById('katman').replaceChildren();
     kap.replaceChildren();
@@ -21,6 +22,7 @@
     try {
       if (bolum === '') HO.sayfa.ana(kap);
       else if (bolum === 'egzersizler') HO.sayfa.egzersizler(kap);
+      else if (bolum === 'kategori') HO.sayfa.kategori(kap, yol[1]);
       else if (bolum === 'ilerleme') HO.sayfa.ilerleme(kap);
       else if (bolum === 'ayarlar') HO.sayfa.ayarlar(kap);
       else if (bolum === 'metinlerim') HO.sayfa.metinlerim(kap, yol[1]);
@@ -35,6 +37,19 @@
       );
     }
   }
+
+  // Kartlarda imleci izleyen ışık: --mx/--my değişkenlerini yazar.
+  document.addEventListener(
+    'pointermove',
+    (e) => {
+      const k = e.target.closest && e.target.closest('.isikli');
+      if (!k) return;
+      const r = k.getBoundingClientRect();
+      k.style.setProperty('--mx', e.clientX - r.left + 'px');
+      k.style.setProperty('--my', e.clientY - r.top + 'px');
+    },
+    { passive: true }
+  );
 
   function baslat() {
     HO.depo.yukle();

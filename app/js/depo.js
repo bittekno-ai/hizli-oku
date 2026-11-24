@@ -12,6 +12,7 @@
       satirAraligi: 1.7,
       tema: 'sistem',
       gozMolasi: true,
+      hareket: 'sistem', // sistem | acik | az
       epilepsiGizle: false,
       egz: {}, // egzersiz başına son seçilen seçenekler
     },
