@@ -11,6 +11,7 @@ Bu klasörde Ömer Bey için (hitap: "Ömer Bey") ücretsiz, açık kaynak bir *
 ## Durum
 - 2026-11-24: Kit ve araştırma ikinci beyin penceresinde hazırlandı.
 - 2026-11-24: Kararlar alındı (ad "Hızlı Oku", web + Tauri, lisans sonra). 0.1.0 (MVP) kodlandı ve headless Chrome ile uçtan uca denendi. Ayrıntı: `calisma/vaulta-aktarim.md`.
+- 2026-11-24: Yayında. Repo https://github.com/bittekno-ai/hizli-oku (herkese açık, MIT). Web: https://bittekno-ai.github.io/hizli-oku/ (`app/` değişip main'e gönderilince kendiliğinden güncellenir). `calisma/` repoya girmez.
 - Sıradaki adım: Ömer Bey'in elle denemesi, geri bildirimler; Codex ikonu ve siluetler; daha fazla metin (hedef 30+); lisans ve GitHub kararı.
 
 ## Kod yapısı (kısa)

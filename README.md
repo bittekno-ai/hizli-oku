@@ -24,6 +24,9 @@ Sonuçlar yalnız kendi cihazınızda saklanır. Hesap, sunucu, reklam ya da tak
 
 ## Nasıl açılır
 
+**İnternetten (telefon ve bilgisayar):** https://bittekno-ai.github.io/hizli-oku/  
+Telefonda tarayıcı menüsünden "Ana ekrana ekle" denirse uygulama gibi açılır ve internetsiz de çalışır.
+
 **En kolayı:** `app/index.html` dosyasına çift tıklayın. Tarayıcıda açılır, kurulum gerekmez.
 
 **Yerel sunucuyla** (Node.js gerekir; çevrimdışı önbellek yerel sunucuda kapalıdır, yalnız GitHub Pages sürümünde çalışır):
