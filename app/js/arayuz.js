@@ -315,6 +315,9 @@
         if (!HO.iptalMi(e)) throw e;
       } finally {
         ui.aktiflik(false);
+        // Egzersiz bitti ya da durdu: alan artık tıklanamaz (yarım kalan egzersiz çalışıyor gibi görünmesin).
+        sahne.inert = true;
+        sahne.classList.add('durdu');
       }
       ctx.check();
       if (!sonuc) {

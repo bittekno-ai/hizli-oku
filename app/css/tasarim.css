@@ -580,3 +580,5 @@ nav a.secili { background: var(--vurgu-acik); color: var(--vurgu); }
   .odak-gorsel { max-width: 260px; order: -1; justify-self: start; margin-bottom: -0.5rem; }
   .karsilama-alan h1 { font-size: 1.75rem; }
 }
+
+.sahne.durdu { opacity: 0.5; }

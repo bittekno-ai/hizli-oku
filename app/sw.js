@@ -1,6 +1,6 @@
 'use strict';
 // Çevrimdışı kullanım için önbellek. Yeni sürümde SURUM değiştirilir.
-const SURUM = 'hizlioku-0.4.1';
+const SURUM = 'hizlioku-0.4.2';
 const DOSYALAR = [
   './',
   'index.html',
@@ -59,10 +59,11 @@ self.addEventListener('activate', (e) => {
 });
 
 // Önce ağ, olmazsa önbellek: güncellemeler hemen gelir, internetsiz de çalışır.
+// cache: 'no-cache' tarayıcının HTTP önbelleğindeki eski dosyayı kullanmadan sunucuya sorar.
 self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET') return;
   e.respondWith(
-    fetch(e.request)
+    fetch(e.request, { cache: 'no-cache' })
       .then((r) => {
         const kopya = r.clone();
         caches.open(SURUM).then((c) => c.put(e.request, kopya));
