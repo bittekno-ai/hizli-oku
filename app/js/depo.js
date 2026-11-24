@@ -17,6 +17,7 @@
     },
     sonuclar: [],
     metinKullanim: {}, // metin kimliği -> son kullanım zamanı
+    kendiMetinler: [], // kullanıcının eklediği metinler
   });
 
   let veri = varsayilan();
@@ -69,7 +70,7 @@
     },
 
     sonucEkle(tur, r) {
-      const kayit = { tur, zaman: Date.now(), gun: u.dayKey(), ...r };
+      const kayit = { ...r, tur, zaman: Date.now(), gun: u.dayKey() }; // tur, zaman, gun ezilemez
       veri.sonuclar.push(kayit);
       kaydet();
       return kayit;
@@ -99,8 +100,9 @@
     rehberHedef() {
       const taban = depo.sonEtkiliHiz();
       let h = taban ? taban * 1.12 : 200;
-      const sonR = depo.son('rehber');
+      const sonR = depo.son('rehber', (r) => typeof r.oran === 'number');
       if (sonR && sonR.oran < 0.7) h = Math.min(h, sonR.kdk * 0.9);
+      // (anlama sorusu olmayan kendi metinlerle yapılan okumalar hedefi etkilemez)
       return u.clamp(u.round5(h), 80, 1500);
     },
 
@@ -114,6 +116,34 @@
       veri.metinKullanim[secim.id] = Date.now();
       kaydet();
       return secim;
+    },
+
+    // Kullanıcının kendi metinleri
+    kendiMetinler() {
+      if (!Array.isArray(veri.kendiMetinler)) veri.kendiMetinler = [];
+      return veri.kendiMetinler;
+    },
+    kendiMetin(id) {
+      return depo.kendiMetinler().find((m) => m.id === id) || null;
+    },
+    kendiMetinKaydet(m) {
+      const liste = depo.kendiMetinler();
+      const i = liste.findIndex((x) => x.id === m.id);
+      if (i >= 0) liste[i] = m;
+      else liste.push(m);
+      kaydet();
+    },
+    kendiMetinSil(id) {
+      veri.kendiMetinler = depo.kendiMetinler().filter((m) => m.id !== id);
+      kaydet();
+    },
+    // Egzersiz seçeneklerindeki "Metin" seçimine göre metin döndürür.
+    metinKaynak(kaynak, havuz) {
+      if (kaynak && kaynak !== 'program') {
+        const m = depo.kendiMetin(kaynak);
+        if (m) return m;
+      }
+      return depo.metinSec(havuz);
     },
 
     metinKullanildi(id) {

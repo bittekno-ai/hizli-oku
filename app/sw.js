@@ -1,6 +1,6 @@
 'use strict';
 // Çevrimdışı kullanım için önbellek. Yeni sürümde SURUM değiştirilir.
-const SURUM = 'hizlioku-0.2.0';
+const SURUM = 'hizlioku-0.3.0';
 const DOSYALAR = [
   './',
   'index.html',
@@ -29,6 +29,10 @@ const DOSYALAR = [
   'js/egzersizler/rsvp.js',
   'js/egzersizler/burdon.js',
   'js/egzersizler/anlama.js',
+  'js/egzersizler/renk.js',
+  'js/egzersizler/kelimeavi.js',
+  'js/egzersizler/cevresel.js',
+  'js/metinlerim.js',
 ];
 
 self.addEventListener('install', (e) => {

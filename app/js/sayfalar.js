@@ -7,7 +7,7 @@
 
   const GRUPLAR = [
     { baslik: 'Ölçüm', egz: ['test', 'okuma'] },
-    { baslik: 'Göz ve dikkat', egz: ['schulte', 'burdon', 'takip', 'beliren', 'flas'] },
+    { baslik: 'Göz ve dikkat', egz: ['schulte', 'burdon', 'renk', 'kelimeavi', 'takip', 'cevresel', 'beliren', 'flas'] },
     { baslik: 'Okuma antrenmanı', egz: ['piramit', 'rehber', 'tarama', 'anlama', 'rsvp'] },
   ];
 
@@ -156,13 +156,14 @@
       return;
     }
     const plan = planDurumu();
-    const okumalar = d.sonuclar().filter((r) => r.tur === 'test' || r.tur === 'okuma');
+    const okumalar = d.sonuclar().filter((r) => (r.tur === 'test' || r.tur === 'okuma') && typeof r.etkili === 'number');
     const etiket = (r) => (r.tur === 'test' ? 'Seviye testi' : 'Okuma');
     const kdk = (v, eksen) => (eksen ? u.num(v) : u.num(v) + ' kelime/dk');
     const yuzde = (v) => '%' + Math.round(v);
     const schulte = d.sonuclar('schulte').filter((r) => r.boyut === 5);
     const flas = d.sonuclar('flas').filter((r) => r.tur2 === 'rakam');
     const burdon = d.sonuclar('burdon');
+    const cevre = d.sonuclar('cevresel').filter((r) => r.yon === 'yatay');
     const rozet = ROZETLER.map((r) => ({ ...r, var: r.kosul(d) }));
 
     kap.replaceChildren(
@@ -183,7 +184,8 @@
         HO.grafik('Anlama (%)', okumalar.map((r) => ({ gun: r.gun, deger: r.oran * 100, etiket: etiket(r) })), yuzde, { ust: 100 }),
         HO.grafik('Schulte 5 × 5 süresi (saniye)', schulte.map((r) => ({ gun: r.gun, deger: r.sure / 1000, etiket: r.hata + ' hata' })), (v, eksen) => (eksen ? Math.round(v) : v.toFixed(1).replace('.', ',')) + ' sn', { bos: 'Henüz 5 × 5 Schulte sonucu yok.' }),
         HO.grafik('Flaş eşiği, rakam dizisi (ms)', flas.map((r) => ({ gun: r.gun, deger: r.esik, etiket: r.uzunluk + ' rakam' })), (v) => Math.round(v) + ' ms', { bos: 'Henüz rakam dizisi sonucu yok.' }),
-        HO.grafik('Burdon dikkat oranı (%)', burdon.map((r) => ({ gun: r.gun, deger: r.dikkat * 100, etiket: r.taranan + ' harf tarandı' })), yuzde, { ust: 100, bos: 'Henüz Burdon testi sonucu yok.' })
+        HO.grafik('Burdon dikkat oranı (%)', burdon.map((r) => ({ gun: r.gun, deger: r.dikkat * 100, etiket: r.taranan + ' harf tarandı' })), yuzde, { ust: 100, bos: 'Henüz Burdon testi sonucu yok.' }),
+        HO.grafik('Çevresel görüş genişliği, yatay (%)', cevre.map((r) => ({ gun: r.gun, deger: r.genislik, etiket: r.gosterim + ' ms' })), yuzde, { ust: 100, bos: 'Henüz yatay çevresel harf görme sonucu yok.' })
       ),
       el(
         'section',
@@ -276,7 +278,7 @@
         { class: 'kart' },
         el('h2', { text: 'Hakkında' }),
         el('p', { text: 'Hızlı Oku ücretsiz ve açık kaynak bir okuma antrenman programıdır. Okuma hızı her zaman anlama sorularıyla birlikte ölçülür. Etkili hız = okuma hızı × anlama oranı.' }),
-        el('p', { class: 'soluk', text: 'Okuma metinleri bu program için özgün olarak yazılmıştır. Sürüm 0.2.0' })
+        el('p', { class: 'soluk', text: 'Okuma metinleri bu program için özgün olarak yazılmıştır. Sürüm 0.3.0' })
       )
     );
   };

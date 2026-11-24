@@ -31,9 +31,11 @@
       'Kısa bir metni her zamanki gibi, anlayarak okuyun.',
       'Ardından 4 soru gelir. Metne geri dönülemez.',
       'Etkili hız (okuma hızı × anlama) ilerleme grafiğinize eklenir.',
+      'Metinlerim sayfasından eklediğiniz kendi metninizi de seçebilirsiniz.',
     ],
+    secenekler: [HO.ui.metinSecenegi()],
     async calistir(sahne, s, ctx) {
-      const metin = HO.depo.metinSec(HO.icerik.alistirma);
+      const metin = HO.depo.metinKaynak(s.kaynak, HO.icerik.alistirma);
       return HO.ui.okumaTesti(sahne, metin, ctx);
     },
     ozet: (r) => HO.ui.okumaOzet(r),

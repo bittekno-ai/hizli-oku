@@ -1122,3 +1122,175 @@ span.burdon-harf {
   color: var(--vurgu-yazi);
   border-color: var(--vurgu);
 }
+
+/* Rehberle okuma: silinen metin ve dar sütun */
+.rehber-silinen .k.okundu {
+  color: transparent;
+}
+.okuma-metni.rehber-dar {
+  max-width: 15em;
+}
+.rehber-dar .k.aktif {
+  background: var(--vurgu-acik);
+  box-shadow: 0 0 0 3px var(--vurgu-acik);
+}
+.rehber-dar .k.okundu {
+  color: var(--soluk);
+}
+.rehber-dar .metin-baslik {
+  font-size: 1.1em;
+}
+
+/* Renk egzersizi */
+.renk-alan {
+  min-height: 55vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+.renk-kelime {
+  font-size: clamp(2.5rem, 9vw, 4.5rem);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  background: var(--yuzey);
+  border: 1px solid var(--cizgi);
+  border-radius: var(--yaricap);
+  padding: 1rem 2rem;
+  min-width: min(520px, 90vw);
+  text-align: center;
+}
+.renk-geri {
+  min-height: 1.5em;
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+.renk-geri.dogru {
+  color: var(--dogru);
+}
+.renk-geri.yanlis {
+  color: var(--yanlis);
+}
+.renk-dugmeler {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(8rem, 1fr));
+  gap: 0.6rem;
+}
+.renk-dugme {
+  font-size: 1.1rem;
+  padding: 0.8rem 1rem;
+}
+
+/* Kelime avı */
+.av-ust {
+  position: sticky;
+  top: 3.6rem;
+  background: var(--zemin);
+  padding: 0.5rem 0;
+  z-index: 2;
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.av-liste {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+.av-hedef {
+  background: var(--vurgu-acik);
+  color: var(--vurgu);
+  font-weight: 700;
+  border-radius: 8px;
+  padding: 0.2rem 0.6rem;
+}
+.av-hedef.bulundu {
+  text-decoration: line-through;
+  opacity: 0.5;
+}
+.av-yigin {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.5rem;
+  justify-content: center;
+  font-size: var(--okuma-boyu);
+  margin-top: 0.5rem;
+}
+.av-kelime {
+  font: inherit;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--yazi);
+  border-radius: 6px;
+  padding: 0.15rem 0.4rem;
+  cursor: pointer;
+}
+.av-kelime:hover {
+  border-color: var(--cizgi);
+}
+.av-kelime.bulundu {
+  background: var(--dogru);
+  color: #fff;
+}
+.av-kelime.yanlis {
+  background: var(--yanlis-zemin);
+}
+
+/* Çevresel harf görme */
+.cevre-alan {
+  position: relative;
+  height: 55vh;
+  background: var(--yuzey);
+  border: 1px solid var(--cizgi);
+  border-radius: var(--yaricap);
+  overflow: hidden;
+}
+.cevre-harf {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 2rem;
+  font-weight: 700;
+}
+.cevre-alt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+/* Metinlerim */
+.ms-form input[type='text'],
+.ms-form textarea,
+.ms-soru input[type='text'] {
+  display: block;
+  width: 100%;
+  font: inherit;
+  padding: 0.5rem 0.6rem;
+  border-radius: 8px;
+  border: 1px solid var(--cizgi);
+  background: var(--yuzey);
+  color: var(--yazi);
+  margin: 0.3rem 0 0.8rem;
+}
+.ms-soru {
+  border: 1px solid var(--cizgi);
+  border-radius: var(--yaricap);
+  padding: 0.8rem 1rem;
+  margin-bottom: 0.8rem;
+}
+.ms-secenekler {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0 0.6rem;
+}
+.ms-alt {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  align-items: center;
+}

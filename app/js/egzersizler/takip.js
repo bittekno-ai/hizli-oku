@@ -9,8 +9,23 @@
     'yatay-sonsuzluk': 'Yatay sonsuzluk (∞)',
     'dikey-sonsuzluk': 'Dikey sonsuzluk (8)',
     'kum-saati': 'Kum saati (⧗)',
+    'yatay-zigzag': 'Yatay zigzag (⩘⩗)',
+    'dikey-zigzag': 'Dikey zigzag',
     sicrama: 'Kayan noktalar (sıçrama)',
   };
+
+  // Zigzag: ileri gidip aynı yoldan geri dönen kırık çizgi (0..1 koordinatlarda).
+  function zigzag(yatay) {
+    const ileri = [];
+    const n = 8;
+    for (let i = 0; i < n; i++) {
+      const a = 0.08 + (0.84 * i) / (n - 1);
+      const b = i % 2 ? 0.82 : 0.18;
+      ileri.push(yatay ? [a, b] : [b, a]);
+    }
+    return ileri.concat(ileri.slice(1, -1).reverse());
+  }
+  const YOLLAR = { 'yatay-zigzag': zigzag(true), 'dikey-zigzag': zigzag(false) };
 
   // Bernoulli lemniskatı: t ∈ [0, 2π)
   function lemniskat(t) {
@@ -28,20 +43,21 @@
     [0.85, 0.9],
   ];
 
-  function kumNokta(f, w, h) {
-    // f ∈ [0,1): çevre boyunca konum. Köşelerde kısa duraklama.
-    const p = KUM.map(([x, y]) => [x * w, y * h]);
+  function kumNokta(f, w, h, koseler = KUM) {
+    // f ∈ [0,1): kapalı yol boyunca konum. Köşelerde kısa duraklama.
+    const p = koseler.map(([x, y]) => [x * w, y * h]);
     const seg = [];
     let top = 0;
-    for (let i = 0; i < 4; i++) {
+    const n = p.length;
+    for (let i = 0; i < n; i++) {
       const a = p[i];
-      const b = p[(i + 1) % 4];
+      const b = p[(i + 1) % n];
       const L = Math.hypot(b[0] - a[0], b[1] - a[1]);
       seg.push({ a, b, L });
       top += L;
     }
-    const DURAK = 0.04; // her köşede çevrenin %4'ü kadar bekle
-    const hareket = 1 - DURAK * 4;
+    const DURAK = 0.16 / n; // köşelerde toplam sürenin %16'sı kadar bekleme
+    const hareket = 1 - DURAK * n;
     let kalan = f;
     for (const s of seg) {
       const pay = (s.L / top) * hareket;
@@ -94,7 +110,7 @@
       const renkNokta = stil.getPropertyValue('--vurgu2').trim() || '#e07a2e';
       const renkIz = stil.getPropertyValue('--cizgi').trim() || '#ccc';
 
-      const periyot = { yavas: 9000, orta: 6000, hizli: 3800 }[s.hiz];
+      const periyot = { yavas: 9000, orta: 6000, hizli: 3800 }[s.hiz] * (YOLLAR[s.desen] ? 2 : 1);
       const sicramaAralik = { yavas: 1000, orta: 700, hizli: 450 }[s.hiz];
       const sureMs = s.sure * 1000;
 
@@ -109,7 +125,7 @@
           const A = Math.min(h * 0.44, w * 1.1);
           return [w / 2 + y * A * 1.6, h / 2 + x * A];
         }
-        return kumNokta(f, w, h);
+        return kumNokta(f, w, h, YOLLAR[s.desen] || KUM);
       };
 
       const izCiz = () => {
@@ -117,9 +133,9 @@
         c2.strokeStyle = renkIz;
         c2.lineWidth = 2;
         c2.beginPath();
-        if (s.desen === 'kum-saati') {
-          KUM.forEach(([x, y], i) => (i ? c2.lineTo(x * w, y * h) : c2.moveTo(x * w, y * h)));
-          c2.closePath();
+        if (s.desen === 'kum-saati' || YOLLAR[s.desen]) {
+          (YOLLAR[s.desen] || KUM).forEach(([x, y], i) => (i ? c2.lineTo(x * w, y * h) : c2.moveTo(x * w, y * h)));
+          if (!YOLLAR[s.desen]) c2.closePath();
         } else {
           for (let i = 0; i <= 200; i++) {
             const [x, y] = konum((i / 200) * periyot);

@@ -9,16 +9,20 @@
 - **Egzersizler:**
   - Schulte tablosu
   - Burdon dikkat testi
-  - Göz takibi: yatay ve dikey sonsuzluk, kum saati, kayan noktalar
+  - Renk egzersizi (yazının anlamı yerine rengini seçme)
+  - Kelime avı
+  - Göz takibi: yatay ve dikey sonsuzluk, yatay ve dikey zigzag, kum saati, kayan noktalar
+  - Çevresel harf görme: yatay, dikey, çapraz
   - Beliren kelimeler: yatay, çapraz, rastgele
-  - Pilot flaş eğitimi: İkinci Dünya Savaşı'nda pilotlara uygulanan Renshaw takistoskop yöntemine dayanan, uyarlamalı süreli rakam, kelime ve kelime grubu tanıma
+  - Pilot flaş eğitimi: İkinci Dünya Savaşı'nda pilotlara uygulanan Renshaw takistoskop yöntemine dayanan, uyarlamalı süreli rakam dizisi, harf dizisi, kelime ve kelime grubu tanıma
   - Çam ağacı: yukarıdan aşağı ve aşağıdan yukarı
-  - Rehberle okuma: soluk metin, gizli metin, satır vurgusu; isteğe bağlı metronom
+  - Rehberle okuma: soluk metin, gizli metin, silinen metin, satır vurgusu, dar sütun; isteğe bağlı metronom
   - Akıllı tarama
   - Anlama teknikleri: anahtar kelime bulma, 5N1K
   - Tek nokta okuma (RSVP)
   - Okuma ve anlama
-- **İlerleme:** Etkili hız, anlama, Schulte süresi, flaş eşiği ve Burdon dikkat oranı grafikleri; 4 haftalık plan takvimi, seri ve rozetler.
+- **Metinlerim:** Kendi metninizi (kitap bölümü, ders notu) ekleyip isterseniz çoktan seçmeli sorular yazabilir, okuma egzersizlerinde kullanabilirsiniz. Metinler yalnız sizin cihazınızda kalır.
+- **İlerleme:** Etkili hız, anlama, Schulte süresi, flaş eşiği, Burdon dikkat oranı ve çevresel görüş genişliği grafikleri; 4 haftalık plan takvimi, seri ve rozetler.
 
 Sonuçlar yalnız kendi cihazınızda saklanır. Hesap, sunucu, reklam ya da takip kodu yoktur. Ayarlar sayfasından yedek alıp başka cihaza taşıyabilirsiniz.
 

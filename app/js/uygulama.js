@@ -23,6 +23,7 @@
       else if (bolum === 'egzersizler') HO.sayfa.egzersizler(kap);
       else if (bolum === 'ilerleme') HO.sayfa.ilerleme(kap);
       else if (bolum === 'ayarlar') HO.sayfa.ayarlar(kap);
+      else if (bolum === 'metinlerim') HO.sayfa.metinlerim(kap, yol[1]);
       else if (bolum === 'gunluk') await HO.gunlukCalistir(kap, benim);
       else if (bolum === 'egzersiz' && HO.egz[yol[1]]) await HO.ui.egzersizCalistir(kap, HO.egz[yol[1]], benim);
       else kap.replaceChildren(el('h1', { text: 'Sayfa bulunamadı' }), el('a', { href: '#/', text: 'Ana sayfaya dön' }));

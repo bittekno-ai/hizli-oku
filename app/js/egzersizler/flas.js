@@ -6,7 +6,10 @@
   const el = u.el;
   HO.egz = HO.egz || {};
 
-  const TURLER = { rakam: 'Rakam dizisi', kelime: 'Kelime', grup: 'Kelime grubu' };
+  const TURLER = { rakam: 'Rakam dizisi', harf: 'Harf dizisi', kelime: 'Kelime', grup: 'Kelime grubu' };
+  // Birbirine benzeyen ve klavyede karışan harfler (I, İ, Ğ, O, Ö) çıkarıldı.
+  const HARFLER = 'ABCÇDEFGHJKLMNPRSŞTUÜVYZ';
+  const DIZILI = (tur) => tur === 'rakam' || tur === 'harf';
   const EN_KISA = 17; // yaklaşık bir ekran karesi
   const EN_UZUN = 1000;
 
@@ -14,6 +17,11 @@
     if (tur === 'rakam') {
       let s = String(u.randInt(1, 9));
       while (s.length < uzunluk) s += u.randInt(0, 9);
+      return s;
+    }
+    if (tur === 'harf') {
+      let s = '';
+      while (s.length < uzunluk) s += HARFLER[u.randInt(0, HARFLER.length - 1)];
       return s;
     }
     if (tur === 'kelime') return u.pick(HO.icerik.kelimeler);
@@ -28,7 +36,7 @@
   }
 
   function baslangicSure(tur, uzunluk) {
-    const son = HO.depo.son('flas', (r) => r.tur2 === tur && (tur !== 'rakam' || r.uzunluk === uzunluk));
+    const son = HO.depo.son('flas', (r) => r.tur2 === tur && (!DIZILI(tur) || r.uzunluk === uzunluk));
     if (!son) return tur === 'grup' ? 400 : 300;
     return u.clamp(Math.round(son.esik * 1.3), 50, 500);
   }
@@ -59,7 +67,7 @@
     ],
     secenekler: [
       { ad: 'tur', etiket: 'Ne gösterilsin', degerler: Object.entries(TURLER), varsayilan: 'rakam' },
-      { ad: 'uzunluk', etiket: 'Rakam sayısı', degerler: [[3, '3'], [4, '4'], [5, '5'], [6, '6'], [7, '7'], [8, '8'], [9, '9']], varsayilan: 4 },
+      { ad: 'uzunluk', etiket: 'Dizi uzunluğu (rakam/harf)', degerler: [[3, '3'], [4, '4'], [5, '5'], [6, '6'], [7, '7'], [8, '8'], [9, '9']], varsayilan: 4 },
       { ad: 'deneme', etiket: 'Deneme sayısı', degerler: [[10, '10'], [20, '20'], [30, '30']], varsayilan: 20 },
     ],
     async calistir(sahne, s, ctx, { bilgi }) {
@@ -71,9 +79,9 @@
         class: 'flas-giris',
         type: 'text',
         autocomplete: 'off',
-        autocapitalize: 'off',
         spellcheck: 'false',
         inputmode: tur === 'rakam' ? 'numeric' : 'text',
+        autocapitalize: tur === 'harf' ? 'characters' : 'off',
         placeholder: 'Gördüğünüzü yazın',
       });
       const geri = el('div', { class: 'flas-geri' });
@@ -128,7 +136,7 @@
       const enKisaDogru = denemeler.filter((x) => x.dogru).reduce((a, b) => Math.min(a, b.ms), Infinity);
       return {
         tur2: tur,
-        uzunluk: tur === 'rakam' ? uzunluk : null,
+        uzunluk: DIZILI(tur) ? uzunluk : null,
         deneme: denemeler.length,
         dogru: dogruSay,
         esik,
@@ -137,7 +145,7 @@
       };
     },
     ozet: (r) => [
-      ['Tür', TURLER[r.tur2] + (r.uzunluk ? ` (${r.uzunluk} rakam)` : '')],
+      ['Tür', TURLER[r.tur2] + (r.uzunluk ? ` (${r.uzunluk} ${r.tur2 === 'harf' ? 'harf' : 'rakam'})` : '')],
       ['Doğru', `${r.deneme} denemede ${r.dogru}`],
       ['Flaş eşiği', r.esik + ' ms'],
       ['En kısa doğru', r.enKisa ? r.enKisa + ' ms' : '-'],

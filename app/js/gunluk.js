@@ -14,16 +14,26 @@
 
     const adimlar = [];
     if (HO.depo.testGerekli()) adimlar.push({ egz: 'test' });
-    adimlar.push(
+    // Isınma: dikkat egzersizleri sırayla döner.
+    const isinma = [
       { egz: 'schulte', secenek: { boyut: 5 } },
-      { egz: 'takip', secenek: { desen: ['yatay-sonsuzluk', 'dikey-sonsuzluk', 'kum-saati', 'sicrama'][d % 4], sure: 60 } },
-      { egz: 'flas', secenek: { tur: ['rakam', 'kelime', 'grup'][d % 3], uzunluk, deneme: 20 } },
-      d % 2 === 0
-        ? { egz: 'piramit', secenek: { yon: d % 4 === 0 ? 'yukaridan' : 'asagidan', hiz: 'oto', sure: 90 } }
-        : { egz: 'beliren', secenek: { desen: ['yatay', 'capraz', 'rastgele'][d % 3], adet: 50 } },
-      { egz: 'rehber', secenek: { mod: ['soluk', 'gizli', 'satir'][d % 3], hiz: 'oto' } },
+      { egz: 'burdon', secenek: { sure: 60 } },
+      { egz: 'renk', secenek: { sure: 60 } },
+      { egz: 'kelimeavi', secenek: { tur: 3 } },
+    ][d % 4];
+    const gorus = [
+      { egz: 'piramit', secenek: { yon: d % 4 === 0 ? 'yukaridan' : 'asagidan', hiz: 'oto', sure: 90, kaynak: 'program' } },
+      { egz: 'beliren', secenek: { desen: ['yatay', 'capraz', 'rastgele'][d % 3], adet: 50 } },
+      { egz: 'cevresel', secenek: { yon: ['yatay', 'dikey', 'capraz'][d % 3], deneme: 15 } },
+    ][d % 3];
+    adimlar.push(
+      isinma,
+      { egz: 'takip', secenek: { desen: ['yatay-sonsuzluk', 'yatay-zigzag', 'dikey-sonsuzluk', 'kum-saati', 'dikey-zigzag', 'sicrama'][d % 6], sure: 60 } },
+      { egz: 'flas', secenek: { tur: ['rakam', 'kelime', 'harf', 'grup'][d % 4], uzunluk, deneme: 20 } },
+      gorus,
+      { egz: 'rehber', secenek: { mod: ['soluk', 'gizli', 'satir', 'silinen', 'dar'][d % 5], hiz: 'oto', kaynak: 'program' } },
       { egz: 'tarama', secenek: { adet: 2 } },
-      { egz: 'okuma' }
+      { egz: 'okuma', secenek: { kaynak: 'program' } }
     );
     return adimlar;
   };

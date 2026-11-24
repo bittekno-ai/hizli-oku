@@ -27,11 +27,17 @@
         varsayilan: 'oto',
       },
       { ad: 'sure', etiket: 'Süre', degerler: [[60, '1 dakika'], [90, '1,5 dakika'], [120, '2 dakika']], varsayilan: 90 },
+      {
+        ad: 'kaynak',
+        etiket: 'Metin',
+        degerler: () => [['program', 'Program metinleri'], ...HO.depo.kendiMetinler().map((m) => [m.id, 'Metinlerim: ' + m.baslik])],
+        varsayilan: 'program',
+      },
     ],
     async calistir(sahne, s, ctx, { bilgi }) {
       const kdk = s.hiz === 'oto' ? HO.depo.rehberHedef() : s.hiz;
       // Sorusuz serbest metinler: okuma testlerinde kullanılacak metinler önceden görülmesin.
-      const metin = u.pick(HO.icerik.serbest);
+      const metin = (s.kaynak !== 'program' && HO.depo.kendiMetin(s.kaynak)) || u.pick(HO.icerik.serbest);
       const kelimeler = u.words(u.metinYazi(metin));
       const agirlik = u.kelimeAgirliklari(kelimeler);
       const birim = 60000 / kdk;

@@ -221,15 +221,16 @@
     const kap = el('div', { class: 'secenekler' });
     (ex.secenekler || []).forEach((s) => {
       const vars = typeof s.varsayilan === 'function' ? s.varsayilan() : s.varsayilan;
-      if (deger[s.ad] === undefined || !s.degerler.some(([v]) => v === deger[s.ad])) deger[s.ad] = vars;
+      const degerler = typeof s.degerler === 'function' ? s.degerler() : s.degerler;
+      if (deger[s.ad] === undefined || !degerler.some(([v]) => v === deger[s.ad])) deger[s.ad] = vars;
       const sec = el('select', { id: 'sec-' + s.ad });
-      s.degerler.forEach(([v, yazi]) => {
+      degerler.forEach(([v, yazi]) => {
         const o = el('option', { value: String(v), text: typeof yazi === 'function' ? yazi() : yazi });
         if (v === deger[s.ad]) o.selected = true;
         sec.append(o);
       });
       sec.addEventListener('change', () => {
-        const bul = s.degerler.find(([v]) => String(v) === sec.value);
+        const bul = degerler.find(([v]) => String(v) === sec.value);
         deger[s.ad] = bul[0];
       });
       kap.append(el('label', { class: 'secenek-satir', for: 'sec-' + s.ad }, el('span', { text: s.etiket }), sec));
@@ -368,8 +369,9 @@
       if (evet) break;
     }
     const karakter = u.charCount(yazi);
-    const cevap = await ui.sorular(sahne, metin.sorular, ctx);
     const kdk = kelime / (sure / 60000);
+    const soruVar = metin.sorular && metin.sorular.length;
+    const cevap = soruVar ? await ui.sorular(sahne, metin.sorular, ctx) : { dogru: null, toplam: 0, oran: null };
     return {
       metin: metin.id,
       sure: Math.round(sure),
@@ -379,18 +381,29 @@
       dogru: cevap.dogru,
       toplam: cevap.toplam,
       oran: cevap.oran,
-      etkili: Math.round(kdk * cevap.oran),
+      etkili: soruVar ? Math.round(kdk * cevap.oran) : null,
+      kendi: metin.kendi || undefined,
     };
   };
+
+  // Kullanıcının kendi metinlerini de içeren "Metin" seçeneği (Metinlerim sayfası).
+  ui.metinSecenegi = () => ({
+    ad: 'kaynak',
+    etiket: 'Metin',
+    degerler: () => [['program', 'Program metinleri (sırayla)'], ...HO.depo.kendiMetinler().map((m) => [m.id, 'Metinlerim: ' + m.baslik])],
+    varsayilan: 'program',
+  });
+  ui.anlamaYazi = (r) => (typeof r.oran === 'number' ? `${u.pct(r.oran)} (${r.dogru}/${r.toplam})` : 'Sorusuz metin');
 
   ui.okumaOzet = (r) => [
     ['Süre', u.fmtClock(r.sure)],
     ['Okuma hızı', u.num(r.kdk) + ' kelime/dk'],
     ['Karakter hızı', u.num(r.kardk) + ' karakter/dk'],
-    ['Anlama', `${u.pct(r.oran)} (${r.dogru}/${r.toplam})`],
-    ['Etkili hız', u.num(r.etkili) + ' kelime/dk'],
+    ['Anlama', ui.anlamaYazi(r)],
+    ['Etkili hız', typeof r.etkili === 'number' ? u.num(r.etkili) + ' kelime/dk' : '-'],
   ];
   ui.okumaNotlar = (r) => {
+    if (typeof r.oran !== 'number') return ['Bu metnin anlama sorusu olmadığı için yalnız hız ölçüldü. Metinlerim sayfasından metne soru ekleyebilirsiniz.'];
     const n = ['Etkili hız = okuma hızı × anlama oranı.'];
     if (r.oran < 0.7) n.push('Anlama %70’in altında. Rehberle okumanın hedef hızı bu sonuçla artırılmayacak.');
     return n;

@@ -10,7 +10,10 @@
     soluk: 'Soluk metin, okunan renkli',
     gizli: 'Gizli metin, yalnız okunan görünür',
     satir: 'Satır vurgusu',
+    silinen: 'Silinen metin, okunan kelimeler silinir',
+    dar: 'Dar sütun (dikey blok okuma)',
   };
+  const SATIRLI = (mod) => mod === 'satir' || mod === 'dar';
 
   // Kelime dizisini gruplara ayırır (paragraf sınırını aşmaz).
   function gruplar(kelimeler, n) {
@@ -50,6 +53,7 @@
       'Metinde okunacak kelime ya da kelime grubu belirlediğiniz hızda renklenir. Gözünüzle onu izleyin.',
       'Boşluk tuşu ya da metne dokunmak duraklatır. Yukarı ve aşağı ok tuşları hızı 10 kelime/dk değiştirir.',
       'İsterseniz metronomu açın: her kelime grubunda bir tık sesi gelir, yeni paragrafta ses biraz incelir. Okumanızı bu ritme uydurun.',
+      'Silinen metin: kelimeler sırayla silinir, silinmeden önce okumaya çalışın. Dar sütun: metin dar bir sütunda satır satır vurgulanır.',
       'Metin bitince anlama soruları gelir.',
       'Hedef hız, son ölçülen etkili hızınızın biraz üstüne ayarlanır. Anlama %70’in altında kalırsa bir sonraki seferde hız bir basamak düşer.',
     ],
@@ -62,19 +66,20 @@
         degerler: [['oto', () => `Hedef hız (${HO.depo.rehberHedef()} kelime/dk)`], [150, '150 kelime/dk'], [200, '200 kelime/dk'], [250, '250 kelime/dk'], [300, '300 kelime/dk'], [350, '350 kelime/dk'], [400, '400 kelime/dk'], [500, '500 kelime/dk']],
         varsayilan: 'oto',
       },
+      HO.ui.metinSecenegi(),
       { ad: 'metronom', etiket: 'Metronom (tık sesi)', degerler: [['kapali', 'Kapalı'], ['acik', 'Açık']], varsayilan: 'kapali' },
     ],
     async calistir(sahne, s, ctx, { bilgi }) {
       let kdk = s.hiz === 'oto' ? HO.depo.rehberHedef() : s.hiz;
       const baslangicKdk = kdk;
-      const metin = HO.depo.metinSec(HO.icerik.alistirma);
+      const metin = HO.depo.metinKaynak(s.kaynak, HO.icerik.alistirma);
       await HO.ui.geriSayim(sahne, ctx, metin.baslik);
       const { govde, kelimeler } = HO.ui.metinYerlestir(sahne, metin, 'rehber rehber-' + s.mod);
       const agirlik = u.kelimeAgirliklari(kelimeler.map((k) => k.textContent));
       kelimeler.forEach((k, i) => (k._w = agirlik[i]));
       window.scrollTo(0, 0);
 
-      const birimler = s.mod === 'satir' ? satirlar(kelimeler) : gruplar(kelimeler, s.grup);
+      const birimler = SATIRLI(s.mod) ? satirlar(kelimeler) : gruplar(kelimeler, s.grup);
       let duraklat = false;
       let devamEt = null;
       const yaz = () => (bilgi.textContent = `${kdk} kelime/dk${duraklat ? ' · Duraklatıldı' : ''}`);
@@ -131,11 +136,11 @@
         });
       }
       const sure = performance.now() - t0 - bekleme;
-      const cevap = await HO.ui.sorular(sahne, metin.sorular, ctx);
+      const cevap = metin.sorular && metin.sorular.length ? await HO.ui.sorular(sahne, metin.sorular, ctx) : { dogru: null, toplam: 0, oran: null };
       return {
         metin: metin.id,
         mod: s.mod,
-        grup: s.mod === 'satir' ? null : s.grup,
+        grup: SATIRLI(s.mod) ? null : s.grup,
         kdk,
         baslangicKdk,
         gercekKdk: Math.round(kelimeler.length / (sure / 60000)),
@@ -147,10 +152,12 @@
     ozet: (r) => [
       ['Görünüm', MODLAR[r.mod] + (r.grup ? ` · ${r.grup} kelime` : '')],
       ['Hız', r.kdk + ' kelime/dk'],
-      ['Anlama', `${u.pct(r.oran)} (${r.dogru}/${r.toplam})`],
+      ['Anlama', HO.ui.anlamaYazi(r)],
     ],
     notlar: (r) =>
-      r.oran < 0.7
+      typeof r.oran !== 'number'
+        ? ['Bu metnin sorusu olmadığı için hedef hız bu sonuçla değişmedi.']
+        : r.oran < 0.7
         ? ['Anlama %70’in altında. Bir sonraki rehberli okumada hız bir basamak düşürülecek.']
         : [`Bir sonraki hedef hız: ${HO.depo.rehberHedef()} kelime/dk.`],
   };

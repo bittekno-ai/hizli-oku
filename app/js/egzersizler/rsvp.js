@@ -25,10 +25,11 @@
         degerler: [['oto', () => `Hedef hız (${HO.depo.rehberHedef()} kelime/dk)`], [150, '150 kelime/dk'], [200, '200 kelime/dk'], [250, '250 kelime/dk'], [300, '300 kelime/dk'], [400, '400 kelime/dk'], [500, '500 kelime/dk']],
         varsayilan: 'oto',
       },
+      HO.ui.metinSecenegi(),
     ],
     async calistir(sahne, s, ctx, { bilgi }) {
       const kdk = s.hiz === 'oto' ? HO.depo.rehberHedef() : s.hiz;
-      const metin = HO.depo.metinSec(HO.icerik.alistirma);
+      const metin = HO.depo.metinKaynak(s.kaynak, HO.icerik.alistirma);
       const kelimeler = u.words(u.metinYazi(metin));
       const agirlik = u.kelimeAgirliklari(kelimeler);
       await HO.ui.geriSayim(sahne, ctx, metin.baslik);
@@ -82,13 +83,13 @@
         i++;
         await ctx.wait(ms);
       }
-      const cevap = await HO.ui.sorular(sahne, metin.sorular, ctx);
+      const cevap = metin.sorular && metin.sorular.length ? await HO.ui.sorular(sahne, metin.sorular, ctx) : { dogru: null, toplam: 0, oran: null };
       return { metin: metin.id, kdk, geri, dogru: cevap.dogru, toplam: cevap.toplam, oran: cevap.oran };
     },
     ozet: (r) => [
       ['Hız', r.kdk + ' kelime/dk'],
       ['Geri sarma', String(r.geri)],
-      ['Anlama', `${u.pct(r.oran)} (${r.dogru}/${r.toplam})`],
+      ['Anlama', HO.ui.anlamaYazi(r)],
     ],
   };
 })();
