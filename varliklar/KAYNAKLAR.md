@@ -3,6 +3,7 @@
 | Dosya | Araç | Tarih | İstek dosyası | Durum |
 |---|---|---|---|---|
 | `app/ikonlar/ikon-*.png`, `src-tauri/icons/*` | `araclar/ikon-uret.mjs` (kodla çizilmiş geçici ikon) | 2026-11-24 | - | Geçici. Codex ikonu gelince değiştirilecek. |
+| `app/ikonlar/bittekno-paylasim.jpg` | Bittekno logosu, `bittekno-ai` GitHub profil resmi (Ömer Bey'in isteği) | 2026-11-24 | - | Bağlantı paylaşım önizlemesinde (og:image) kullanılıyor |
 | (bekliyor) uygulama ikonu | Codex | - | `istekler/ikon.md` | İstek hazır |
 | (bekliyor) siluetler | Codex | - | `istekler/siluetler.md` | İstek hazır |
 
