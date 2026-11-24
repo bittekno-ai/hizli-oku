@@ -48,7 +48,8 @@
     sure: '4–5 dk',
     nasil: [
       'Metinde okunacak kelime ya da kelime grubu belirlediğiniz hızda renklenir. Gözünüzle onu izleyin.',
-      'Boşluk tuşu duraklatır. Yukarı ve aşağı ok tuşları hızı 10 kelime/dk değiştirir.',
+      'Boşluk tuşu ya da metne dokunmak duraklatır. Yukarı ve aşağı ok tuşları hızı 10 kelime/dk değiştirir.',
+      'İsterseniz metronomu açın: her kelime grubunda bir tık sesi gelir, yeni paragrafta ses biraz incelir. Okumanızı bu ritme uydurun.',
       'Metin bitince anlama soruları gelir.',
       'Hedef hız, son ölçülen etkili hızınızın biraz üstüne ayarlanır. Anlama %70’in altında kalırsa bir sonraki seferde hız bir basamak düşer.',
     ],
@@ -61,6 +62,7 @@
         degerler: [['oto', () => `Hedef hız (${HO.depo.rehberHedef()} kelime/dk)`], [150, '150 kelime/dk'], [200, '200 kelime/dk'], [250, '250 kelime/dk'], [300, '300 kelime/dk'], [350, '350 kelime/dk'], [400, '400 kelime/dk'], [500, '500 kelime/dk']],
         varsayilan: 'oto',
       },
+      { ad: 'metronom', etiket: 'Metronom (tık sesi)', degerler: [['kapali', 'Kapalı'], ['acik', 'Açık']], varsayilan: 'kapali' },
     ],
     async calistir(sahne, s, ctx, { bilgi }) {
       let kdk = s.hiz === 'oto' ? HO.depo.rehberHedef() : s.hiz;
@@ -102,6 +104,7 @@
       const t0 = performance.now();
       let bekleme = 0;
       let sonSatirY = null;
+      let oncekiP = null;
       for (const b of birimler) {
         while (duraklat) {
           const tp = performance.now();
@@ -109,6 +112,8 @@
           bekleme += performance.now() - tp;
         }
         b.forEach((k) => k.classList.add('aktif'));
+        if (s.metronom === 'acik') HO.ui.tik(b[0].dataset.p !== oncekiP);
+        oncekiP = b[0].dataset.p;
         const y = b[0].getBoundingClientRect().top;
         if (sonSatirY === null || y !== sonSatirY) {
           sonSatirY = y;

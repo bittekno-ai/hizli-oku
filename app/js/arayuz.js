@@ -110,6 +110,34 @@
     clearInterval(id);
   };
 
+  // Metronom sesi (Web Audio). Telefonlarda ses yalnız bir dokunuşla açılabildiği için
+  // sesAc() "Başla" tıklamasında çağrılır.
+  let sesBaglami = null;
+  ui.sesAc = function () {
+    try {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      if (!sesBaglami) sesBaglami = new AC();
+      if (sesBaglami.state === 'suspended') sesBaglami.resume();
+    } catch (e) {
+      /* ses desteklenmiyor */
+    }
+  };
+  ui.tik = function (vurgulu) {
+    if (!sesBaglami) return;
+    const c = sesBaglami;
+    const o = c.createOscillator();
+    const g = c.createGain();
+    const t = c.currentTime;
+    o.frequency.value = vurgulu ? 1500 : 1100;
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(0.3, t + 0.003);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.05);
+    o.connect(g).connect(c.destination);
+    o.start(t);
+    o.stop(t + 0.06);
+  };
+
   ui.geriSayim = async function (sahne, ctx, yazi) {
     const kutu = el('div', { class: 'geri-sayim' });
     sahne.replaceChildren(el('div', { class: 'ortala' }, yazi ? el('p', { class: 'soluk', text: yazi }) : null, kutu));
@@ -233,7 +261,10 @@
       window.scrollTo(0, 0);
       basla.focus();
       const secim = await ctx.promise((res) => {
-        basla.addEventListener('click', () => res('basla'));
+        basla.addEventListener('click', () => {
+          ui.sesAc();
+          res('basla');
+        });
         if (atla) atla.addEventListener('click', () => res('atla'));
       });
       if (secim === 'atla') return { durum: 'atlandi' };

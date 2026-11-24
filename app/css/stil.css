@@ -982,3 +982,143 @@ select {
     fill: CanvasText;
   }
 }
+
+/* Burdon dikkat testi */
+.burdon-ust {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  position: sticky;
+  top: 3.6rem;
+  background: var(--zemin);
+  padding: 0.5rem 0;
+  z-index: 2;
+}
+.burdon-ust .dugme {
+  margin-left: auto;
+}
+.burdon-hedef {
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 1.5rem;
+  background: var(--vurgu-acik);
+  color: var(--vurgu);
+  border-radius: 8px;
+  padding: 0 0.6rem;
+}
+.burdon {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(2rem, 1fr));
+  gap: 2px;
+}
+.burdon-harf {
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 1.25rem;
+  height: 2.2rem;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--yazi);
+  cursor: pointer;
+  padding: 0;
+}
+.burdon-harf:hover {
+  background: var(--vurgu-acik);
+}
+.burdon-harf.isaretli {
+  background: var(--vurgu);
+  color: var(--vurgu-yazi);
+}
+.burdon-harf.isaretli.yanlis,
+span.burdon-harf.yanlis {
+  background: var(--yanlis);
+  color: #fff;
+}
+.burdon-harf.atlandi {
+  outline: 2px solid var(--vurgu2);
+  outline-offset: -2px;
+}
+.burdon-harf.taranmadi {
+  opacity: 0.35;
+}
+span.burdon-harf {
+  display: inline-block;
+  width: 1.6rem;
+  height: 1.6rem;
+  line-height: 1.6rem;
+  text-align: center;
+}
+.burdon-acik {
+  color: var(--soluk);
+  font-size: 0.9rem;
+}
+
+/* Anlama teknikleri */
+.anahtar-sec .k {
+  cursor: pointer;
+  border-radius: 4px;
+}
+.anahtar-sec .k:hover {
+  background: var(--vurgu-acik);
+}
+.k.secili {
+  background: var(--vurgu);
+  color: var(--vurgu-yazi);
+  border-radius: 4px;
+}
+.k.oneri {
+  background: transparent;
+  outline: 2px solid var(--vurgu2);
+  outline-offset: -1px;
+  border-radius: 4px;
+}
+.k.ikisi {
+  background: var(--dogru);
+  color: #fff;
+  border-radius: 4px;
+}
+.anahtar-acik .k {
+  padding: 0.1rem 0.4rem;
+  font-size: 0.9rem;
+}
+.anahtar-liste {
+  font-size: var(--okuma-boyu);
+}
+.bes-liste li {
+  margin: 0.3rem 0;
+}
+.bes-form .bes-soru {
+  display: block;
+  margin-bottom: 1rem;
+}
+.bes-form textarea {
+  display: block;
+  width: 100%;
+  margin-top: 0.4rem;
+  font: inherit;
+  padding: 0.5rem;
+  border-radius: 8px;
+  border: 1px solid var(--cizgi);
+  background: var(--yuzey);
+  color: var(--yazi);
+}
+.bes-karsilastir {
+  background: var(--yuzey);
+  border: 1px solid var(--cizgi);
+  border-radius: var(--yaricap);
+  padding: 1rem;
+  margin-bottom: 0.8rem;
+}
+.bes-cevap {
+  margin-top: 0.4rem;
+}
+.bes-puan {
+  display: flex;
+  gap: 0.4rem;
+  margin-top: 0.6rem;
+}
+.bes-puan .secim {
+  background: var(--vurgu);
+  color: var(--vurgu-yazi);
+  border-color: var(--vurgu);
+}

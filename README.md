@@ -8,15 +8,17 @@
 - **Günlük antrenman (15–20 dk):** Aşağıdaki egzersizleri otomatik sırayla yaptırır. Desenler günden güne değişir.
 - **Egzersizler:**
   - Schulte tablosu
+  - Burdon dikkat testi
   - Göz takibi: yatay ve dikey sonsuzluk, kum saati, kayan noktalar
   - Beliren kelimeler: yatay, çapraz, rastgele
   - Pilot flaş eğitimi: İkinci Dünya Savaşı'nda pilotlara uygulanan Renshaw takistoskop yöntemine dayanan, uyarlamalı süreli rakam, kelime ve kelime grubu tanıma
   - Çam ağacı: yukarıdan aşağı ve aşağıdan yukarı
-  - Rehberle okuma: soluk metin, gizli metin, satır vurgusu
+  - Rehberle okuma: soluk metin, gizli metin, satır vurgusu; isteğe bağlı metronom
   - Akıllı tarama
+  - Anlama teknikleri: anahtar kelime bulma, 5N1K
   - Tek nokta okuma (RSVP)
   - Okuma ve anlama
-- **İlerleme:** Etkili hız, anlama, Schulte süresi ve flaş eşiği grafikleri; 4 haftalık plan takvimi, seri ve rozetler.
+- **İlerleme:** Etkili hız, anlama, Schulte süresi, flaş eşiği ve Burdon dikkat oranı grafikleri; 4 haftalık plan takvimi, seri ve rozetler.
 
 Sonuçlar yalnız kendi cihazınızda saklanır. Hesap, sunucu, reklam ya da takip kodu yoktur. Ayarlar sayfasından yedek alıp başka cihaza taşıyabilirsiniz.
 
