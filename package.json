@@ -1,0 +1,17 @@
+{
+  "name": "hizli-oku",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "description": "Hızlı Oku: ücretsiz ve açık kaynak okuma antrenman programı",
+  "type": "module",
+  "scripts": {
+    "basla": "node araclar/sunucu.mjs",
+    "ikon": "node araclar/ikon-uret.mjs && tauri icon app/ikonlar/ikon-1024.png",
+    "masaustu": "tauri dev",
+    "paketle": "tauri build"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2"
+  }
+}

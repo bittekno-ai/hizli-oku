@@ -1,0 +1,31 @@
+# Hızlı okuma programı: ajan talimatları
+
+Bu klasörde Ömer Bey için (hitap: "Ömer Bey") ücretsiz, açık kaynak bir **hızlı okuma antrenman programı** geliştiriyorsun. Program GitHub'da paylaşılacak, arkadaşları ücretsiz kullanacak. Türkçe konuş. Önce `KURALLAR.md`, sonra `docs/ARASTIRMA.md` ve `docs/PROGRAM-TASARIMI.md` dosyalarını oku.
+
+## Amaç (kullanıcı beyanı, 2026-11-24)
+- Ömer Bey yıllar önce bir hızlı okuma kursuna gitti. Orada göz kaslarını çalıştırıp okuma hızını artırdığı söylenen bir bilgisayar programı kullanıldı. Benzerini, internetteki araştırmalara göre en etkili yöntemlerle yapmak istiyor.
+- Pilotların kullandığı "fotoğrafik" tanıma tekniklerinin de eklenmesini istiyor. Araştırmaya göre bu, İkinci Dünya Savaşı'ndaki Renshaw takistoskop (flaş tanıma) eğitimi. Ayrıntı `docs/ARASTIRMA.md` içinde.
+- Mac ve Windows'ta çalışmalı.
+- Görsel gerekirse Codex ile üretilir. Ömer Bey'in Mac'inde ChatGPT uygulaması var. Kurallar için bkz. `docs/CODEX-GORSEL.md`.
+
+## Durum
+- 2026-11-24: Kit ve araştırma ikinci beyin penceresinde hazırlandı.
+- 2026-11-24: Kararlar alındı (ad "Hızlı Oku", web + Tauri, lisans sonra). 0.1.0 (MVP) kodlandı ve headless Chrome ile uçtan uca denendi. Ayrıntı: `calisma/vaulta-aktarim.md`.
+- Sıradaki adım: Ömer Bey'in elle denemesi, geri bildirimler; Codex ikonu ve siluetler; daha fazla metin (hedef 30+); lisans ve GitHub kararı.
+
+## Kod yapısı (kısa)
+- `app/` derleme gerektirmeyen saf HTML/CSS/JS. Klasik `<script>` dosyaları, ortak ad alanı `window.HO`. `index.html` çift tıkla da açılır.
+- `app/js/egzersizler/*.js`: her egzersiz `HO.egz.<id>` nesnesi (`ad`, `nasil`, `secenekler`, `calistir(sahne, s, ctx)`, `ozet`). Çalıştırıcı `HO.ui.egzersizCalistir` (arayuz.js).
+- Veri: `HO.depo` (depo.js), localStorage anahtarı `hizlioku.v1`.
+- İçerik: `app/icerik/metinler.js`, `kelimeler.js`. Metin eklerken `icerik/KAYNAKLAR.md` güncellenir; tarama `anahtar`ı cevap cümlesinde aynen geçmeli.
+- Yerel deneme: `npm run basla` (http://127.0.0.1:5180). Masaüstü: `src-tauri/`, derleme `.github/workflows/masaustu.yml`.
+
+## Dosyalar
+- `KURALLAR.md`: değişmez kurallar (iddia ve kanıt etiketi yok, sağlık uyarısı, telif).
+- `docs/ARASTIRMA.md`: kaynaklı bulgular. Hangi yöntemin kanıtı var, hangisinin yok.
+- `docs/PROGRAM-TASARIMI.md`: modüller, antrenman planı, ölçüm, teknik öneri, açık kararlar.
+- `docs/CODEX-GORSEL.md`: görsel üretme kuralları.
+- `calisma/vaulta-aktarim.md`: ikinci beyne aktarım özeti (aşağıya bakın).
+
+## İkinci beyne aktarım
+Her anlamlı iş parçasından sonra `calisma/vaulta-aktarim.md` dosyasının en üstüne tarihli bir bölüm ekle. Bölümde şunlar olsun: ne yaptık, bulgular (kaynak/dosya ile), kararlar (kullanıcı beyanı mı öneri mi), belirsizlikler, sonraki adım. Eski bölümleri silme. Ömer Bey'den istemeden yap.

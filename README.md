@@ -1,0 +1,61 @@
+# Hızlı Oku
+
+Ücretsiz ve açık kaynak bir okuma antrenman programı. Tarayıcıda (Mac, Windows, telefon) ve masaüstü uygulaması olarak çalışır. Okuma hızı her zaman anlama sorularıyla birlikte ölçülür: **etkili hız = dakikadaki kelime × anlama oranı**.
+
+## İçindekiler
+
+- **Seviye testi:** Kısa bir metni kendi hızınızda okuyup 5 soru cevaplarsınız. Dakikada kelime, dakikada karakter, anlama ve etkili hız gösterilir. Her hafta başında tekrarlanır.
+- **Günlük antrenman (15–20 dk):** Aşağıdaki egzersizleri otomatik sırayla yaptırır. Desenler günden güne değişir.
+- **Egzersizler:**
+  - Schulte tablosu
+  - Göz takibi: yatay ve dikey sonsuzluk, kum saati, kayan noktalar
+  - Beliren kelimeler: yatay, çapraz, rastgele
+  - Pilot flaş eğitimi: İkinci Dünya Savaşı'nda pilotlara uygulanan Renshaw takistoskop yöntemine dayanan, uyarlamalı süreli rakam, kelime ve kelime grubu tanıma
+  - Çam ağacı: yukarıdan aşağı ve aşağıdan yukarı
+  - Rehberle okuma: soluk metin, gizli metin, satır vurgusu
+  - Akıllı tarama
+  - Tek nokta okuma (RSVP)
+  - Okuma ve anlama
+- **İlerleme:** Etkili hız, anlama, Schulte süresi ve flaş eşiği grafikleri; 4 haftalık plan takvimi, seri ve rozetler.
+
+Sonuçlar yalnız kendi cihazınızda saklanır. Hesap, sunucu, reklam ya da takip kodu yoktur. Ayarlar sayfasından yedek alıp başka cihaza taşıyabilirsiniz.
+
+> **Sağlık uyarısı:** Flaş ve beliren kelime egzersizlerinde görüntüler kısa süre belirip kaybolur. Işığa duyarlı epilepsisi olan kişiler bu egzersizleri yapmamalıdır.
+
+## Nasıl açılır
+
+**En kolayı:** `app/index.html` dosyasına çift tıklayın. Tarayıcıda açılır, kurulum gerekmez.
+
+**Yerel sunucuyla** (Node.js gerekir; çevrimdışı önbellek yerel sunucuda kapalıdır, yalnız GitHub Pages sürümünde çalışır):
+
+```
+npm run basla
+```
+
+Ardından tarayıcıda `http://127.0.0.1:5180` adresini açın.
+
+**Masaüstü uygulaması (Tauri):** Mac (.dmg) ve Windows (.exe) paketleri GitHub Actions'ta derlenir: Actions sekmesi > "Masaüstü paketleri" > Run workflow. Paketler bitince "Artifacts" altında çıkar. Kendi bilgisayarınızda derlemek için [Rust](https://rustup.rs) kurun, sonra:
+
+```
+npm install
+npm run masaustu    # geliştirme penceresi
+npm run paketle     # .dmg / .exe
+```
+
+Paketler imzasız olduğu için ilk açılışta Mac ve Windows güvenlik uyarısı verebilir. Mac'te: uygulamaya sağ tıklayıp "Aç" deyin. Windows'ta: "Ek bilgi" > "Yine de çalıştır".
+
+## Klasörler
+
+| Klasör | İçerik |
+|---|---|
+| `app/` | Uygulamanın kendisi (HTML, CSS, JavaScript; derleme gerekmez) |
+| `app/icerik/` | Okuma metinleri, sorular, kelime listeleri |
+| `src-tauri/` | Masaüstü paketi ayarları |
+| `araclar/` | Yerel sunucu ve geçici ikon üretici |
+| `docs/` | Araştırma ve tasarım notları |
+| `icerik/KAYNAKLAR.md` | Metinlerin kaynak ve lisans bilgisi |
+| `varliklar/` | Görsel istekleri ve kaynakları |
+
+## Lisans
+
+MIT. Ayrıntı: `LICENSE`.
