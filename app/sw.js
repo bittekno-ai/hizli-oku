@@ -1,6 +1,6 @@
 'use strict';
 // Çevrimdışı kullanım için önbellek. Yeni sürümde SURUM değiştirilir.
-const SURUM = 'hizlioku-0.4.0';
+const SURUM = 'hizlioku-0.4.1';
 const DOSYALAR = [
   './',
   'index.html',

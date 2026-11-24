@@ -326,6 +326,9 @@
           if (ne === 'tekrar') continue;
           return { durum: 'atlandi' };
         }
+        // Tek başına açılan egzersiz yarıda bitirildi: kategorisine dön.
+        const k = HO.kategoriBul && HO.kategoriBul(ex.id);
+        location.hash = k ? '#/kategori/' + k.id : '#/egzersizler';
         return { durum: 'iptal' };
       }
 
