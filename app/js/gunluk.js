@@ -29,7 +29,7 @@
     adimlar.push(
       isinma,
       { egz: 'takip-' + ['yatay-sonsuzluk', 'yatay-zigzag', 'dikey-sonsuzluk', 'kum-saati', 'dikey-zigzag', 'sicrama'][d % 6], secenek: { sure: 60 } },
-      { egz: 'flas-' + ['rakam', 'kelime', 'harf', 'grup'][d % 4], secenek: { uzunluk, deneme: 20 } },
+      { egz: 'flas-' + ['rakam', 'kelime', 'siluet', 'harf', 'grup'][d % 5], secenek: { uzunluk, deneme: 20 } },
       gorus,
       { egz: 'rehber-' + ['soluk', 'gizli', 'satir', 'silinen', 'dar'][d % 5], secenek: { hiz: 'oto', kaynak: 'program' } },
       { egz: 'tarama', secenek: { adet: 2 } },

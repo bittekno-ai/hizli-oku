@@ -48,11 +48,24 @@
     ['rastgele', 'Beliren kelimeler: rastgele', 'Kelimeler ekranın rastgele yerlerinde belirir.'],
   ].forEach(([d, ad, kisa]) => turet('beliren', { id: 'beliren-' + d, ad, kisa, sabit: { desen: d } }));
   [
-    ['rakam', 'Flaş: rakam dizisi', 'Kısa süre görünen rakamları tanıyın.', []],
-    ['harf', 'Flaş: harf dizisi', 'Kısa süre görünen harfleri tanıyın.', []],
-    ['kelime', 'Flaş: kelime', 'Kısa süre görünen kelimeyi tanıyın.', ['uzunluk']],
-    ['grup', 'Flaş: kelime grubu', 'Kısa süre görünen 2–4 kelimelik grubu tanıyın.', ['uzunluk']],
+    ['rakam', 'Flaş: rakam dizisi', 'Kısa süre görünen rakamları tanıyın.', ['siluetGrup']],
+    ['harf', 'Flaş: harf dizisi', 'Kısa süre görünen harfleri tanıyın.', ['siluetGrup']],
+    ['kelime', 'Flaş: kelime', 'Kısa süre görünen kelimeyi tanıyın.', ['uzunluk', 'siluetGrup']],
+    ['grup', 'Flaş: kelime grubu', 'Kısa süre görünen 2–4 kelimelik grubu tanıyın.', ['uzunluk', 'siluetGrup']],
   ].forEach(([t, ad, kisa, gizle]) => turet('flas', { id: 'flas-' + t, ad, kisa, sabit: { tur: t }, gizle }));
+  turet('flas', {
+    id: 'flas-siluet',
+    ad: 'Flaş: siluet tanıma',
+    kisa: 'Kısa süre görünen uçak, gemi ya da hayvan siluetini tanıyın.',
+    sabit: { tur: 'siluet' },
+    gizle: ['uzunluk'],
+    nasil: [
+      'Ekranın ortasındaki + işaretine bakın.',
+      'Bir uçak, gemi ya da hayvan silueti çok kısa süre görünür. Hemen ardından yerine karışık lekeler gelir; bu lekeler gözde kalan izi siler.',
+      'Dört seçenekten gördüğünüzü seçin (fareyle ya da 1–4 tuşlarıyla). Doğru cevapta gösterim süresi kısalır, yanlışta uzar.',
+      'Renshaw yönteminde pilotlar uçak ve gemi siluetlerini bu şekilde tanımayı çalışırdı. Buradaki uçak ve gemiler kurgusaldır.',
+    ],
+  });
 
   // Okuma teknikleri: rehberle okumanın görünümleri
   const rehberOrtak = [
@@ -108,7 +121,7 @@
       id: 'gorus',
       ad: 'Görüş alanı ve flaş',
       kisa: 'Çevresel görme ve hızlı tanıma.',
-      egz: ['flas-rakam', 'flas-harf', 'flas-kelime', 'flas-grup', 'cevresel-yatay', 'cevresel-dikey', 'cevresel-capraz', 'beliren-yatay', 'beliren-capraz', 'beliren-rastgele'],
+      egz: ['flas-rakam', 'flas-harf', 'flas-kelime', 'flas-grup', 'flas-siluet', 'cevresel-yatay', 'cevresel-dikey', 'cevresel-capraz', 'beliren-yatay', 'beliren-capraz', 'beliren-rastgele'],
     },
     { id: 'okuma', ad: 'Okuma teknikleri', kisa: 'Rehberli, bloklu ve odaklı okuma.', egz: ['rehber-soluk', 'rehber-gizli', 'rehber-satir', 'rehber-silinen', 'rehber-dar', 'piramit-yukaridan', 'piramit-asagidan', 'rsvp', 'tarama'] },
     { id: 'anlama', ad: 'Anlama', kisa: 'Okuduğunuzu yakalama teknikleri.', egz: ['anlama-anahtar', 'anlama-bes'] },

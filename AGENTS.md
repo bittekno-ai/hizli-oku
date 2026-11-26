@@ -15,8 +15,9 @@ Bu klasörde Ömer Bey için (hitap: "Ömer Bey") ücretsiz, açık kaynak bir *
 - 2026-11-24: 0.2.0 (Burdon, anlama teknikleri, metronom) ve 0.3.0 (zigzag, harf flaşı, silinen metin ve dar sütun, Metinlerim, renk egzersizi, kelime avı, çevresel harf görme) yayında.
 - Not: egzersiz sonucunda `tur`, `zaman`, `gun` alan adlarını kullanmayın (depo bunları kendisi yazar).
 - 2026-11-24: 0.4.0: tasarım ("Odak Akışı", Codex'in tasarım yönüne göre: `varliklar/tasarim/TASARIM-YONU.md`, `app/css/tasarim.css`), 6 kategori, seçenekli egzersizler ayrı egzersizlere bölündü (`app/js/egzersizler/turevler.js`; sonuçlar ana egzersiz adıyla kaydedilir).
-- Codex: `/Applications/ChatGPT.app/Contents/Resources/codex-cli/bin/codex exec -m gpt-6-luna ...` (config'deki gpt-6-astra CLI'da çalışmıyor; görsel aracı CLI'da yok, görseller ChatGPT uygulamasında üretilir).
-- Sıradaki adım: Ömer Bey'in elle denemesi, geri bildirimler; Codex ikonu ve siluetler; daha fazla metin (hedef 30+); lisans ve GitHub kararı.
+- 2026-11-26: 0.5.0: ChatGPT ile üretilen uygulama ikonu ve 24 siluet; yeni egzersiz "Flaş: siluet tanıma".
+- Codex: `/Applications/ChatGPT.app/Contents/Resources/codex-cli/bin/codex exec -m gpt-6-luna ...` (config'deki gpt-6-astra CLI'da çalışmıyor). Görsel üretimi 2026-11-26'dan beri CLI'da çalışıyor: istemi stdin'den verin, görseli çalışma klasörüne kopyalamasını isteyin. Görseller `~/.codex/generated_images/` altında da kalır.
+- Sıradaki adım: Ömer Bey'in elle denemesi, geri bildirimler; daha fazla metin (hedef 30+); masaüstü sürüm derlemesi.
 
 ## Kod yapısı (kısa)
 - `app/` derleme gerektirmeyen saf HTML/CSS/JS. Klasik `<script>` dosyaları, ortak ad alanı `window.HO`. `index.html` çift tıkla da açılır.

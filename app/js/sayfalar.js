@@ -340,7 +340,7 @@
         { class: 'kart' },
         el('h2', { text: 'Hakkında' }),
         el('p', { text: 'Hızlı Oku ücretsiz ve açık kaynak bir okuma antrenman programıdır. Okuma hızı her zaman anlama sorularıyla birlikte ölçülür. Etkili hız = okuma hızı × anlama oranı.' }),
-        el('p', { class: 'soluk', text: 'Okuma metinleri bu program için özgün olarak yazılmıştır. Sürüm 0.4.2' })
+        el('p', { class: 'soluk', text: 'Okuma metinleri bu program için özgün olarak yazılmıştır. Sürüm 0.5.0' })
       )
     );
   };

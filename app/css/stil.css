@@ -616,6 +616,36 @@ select {
   border-radius: var(--yaricap);
   white-space: nowrap;
 }
+.flas-kutu.siluetli {
+  height: min(42vh, 22rem);
+  width: min(42vh, 22rem);
+  min-width: 0;
+  padding: 1rem;
+}
+.flas-siluet {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+}
+:root[data-tema='koyu'] .flas-siluet {
+  filter: invert(1);
+}
+@media (prefers-color-scheme: dark) {
+  :root[data-tema='sistem'] .flas-siluet {
+    filter: invert(1);
+  }
+}
+.flas-secimler {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.6rem;
+  width: min(560px, 92vw);
+  min-height: 6.2rem; /* düğmeler gelince kutu yerinden oynamasın */
+}
+.flas-secimler .dugme {
+  text-align: left;
+}
 .flas-giris {
   font: inherit;
   font-size: 1.4rem;

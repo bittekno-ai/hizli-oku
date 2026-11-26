@@ -1,0 +1,13 @@
+Use your image generation tool to create THREE different app icon designs for a free speed-reading training app called "Hızlı Oku". Save them in the current directory as ikon-a.png, ikon-b.png, ikon-c.png (copy from wherever the tool stores them).
+
+Requirements for every icon:
+- Square 1024x1024, full-bleed: the solid background color fills the ENTIRE canvas edge to edge (no rounded corners, no outer white margin, no device frame, no shadow). I will round the corners myself.
+- Flat vector style, solid colors only, no gradients, no textures, no fine detail. Must stay recognizable at 32 px.
+- Background: blue #1673B8. Main shapes white #FFFFFF. One small accent in orange #E0702E. Optionally a little purple #6558B8.
+- Absolutely no letters, text, numbers, books, eyes or brains. Must not resemble any existing brand logo.
+- Keep the motif inside the central ~70% of the canvas.
+
+Concepts:
+A) Three white rounded horizontal bars stacked and centered, getting wider downward (a "pine tree" reading pyramid), with a single orange focus dot above the top bar.
+B) Several white rounded text-line bars aligned left like a paragraph; one bar segment is highlighted orange, as if a reading guide is moving along the line.
+C) A white horizontal infinity / lemniscate path drawn as a thick stroke, with an orange dot traveling on it, and two short white text-line bars below it.
