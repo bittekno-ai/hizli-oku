@@ -16,19 +16,15 @@
     nasil: [
       'Kelimeler ekranın ortasında, seçtiğiniz hızda tek tek gösterilir. Gözünüzü renkli harfte tutun.',
       'Boşluk tuşu duraklatır. Sol ok 10 kelime geri sarar.',
-      'Metin bitince anlama soruları gelir.',
+      'Bu metnin anlama soruları hafta sonundaki anlama testinde sorulur.',
     ],
     secenekler: [
-      {
-        ad: 'hiz',
-        etiket: 'Hız',
-        degerler: [['oto', () => `Hedef hız (${HO.depo.rehberHedef()} kelime/dk)`], [150, '150 kelime/dk'], [200, '200 kelime/dk'], [250, '250 kelime/dk'], [300, '300 kelime/dk'], [400, '400 kelime/dk'], [500, '500 kelime/dk']],
-        varsayilan: 'oto',
-      },
+      HO.ui.hizSecenegi(),
       HO.ui.metinSecenegi(),
     ],
     async calistir(sahne, s, ctx, { bilgi }) {
-      const kdk = s.hiz === 'oto' ? HO.depo.rehberHedef() : s.hiz;
+      const hiz = HO.ui.okumaHizi(s.hiz);
+      const kdk = u.hizKdk(hiz);
       const metin = HO.depo.metinKaynak(s.kaynak, HO.icerik.alistirma);
       const kelimeler = u.words(u.metinYazi(metin));
       const agirlik = u.kelimeAgirliklari(kelimeler);
@@ -70,7 +66,7 @@
         }
       });
 
-      bilgi.textContent = `${kdk} kelime/dk`;
+      bilgi.textContent = u.hizAdi(hiz);
       while (i < kelimeler.length) {
         while (duraklat) await ctx.promise((res) => (devamEt = res));
         const w = kelimeler[i];
@@ -83,13 +79,12 @@
         i++;
         await ctx.wait(ms);
       }
-      const cevap = metin.sorular && metin.sorular.length ? await HO.ui.sorular(sahne, metin.sorular, ctx) : { dogru: null, toplam: 0, oran: null };
-      return { metin: metin.id, kdk, geri, dogru: cevap.dogru, toplam: cevap.toplam, oran: cevap.oran };
+      return { metin: metin.id, hiz, kdk, geri, soruBekliyor: HO.ui.soruluMu(metin) };
     },
     ozet: (r) => [
-      ['Hız', r.kdk + ' kelime/dk'],
+      ['Hız', HO.ui.hizYazi(r)],
       ['Geri sarma', String(r.geri)],
-      ['Anlama', HO.ui.anlamaYazi(r)],
     ],
+    notlar: (r) => HO.ui.okumaEgzNotlar(r),
   };
 })();

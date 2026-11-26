@@ -1,5 +1,6 @@
 'use strict';
-// Günlük antrenman: 15–20 dakikalık, otomatik sıralı adımlar. Desenler günden güne döner.
+// Günlük antrenman: 13 adım, ağırlık göz egzersizlerinde. Desenler günden güne döner.
+// Seviye testi günü son okuma adımının yerine test yapılır. Haftanın 5. gününde sonda haftalık anlama testi gelir.
 (function () {
   const u = HO.u;
   const el = u.el;
@@ -12,8 +13,7 @@
     let uzunluk = sonRakam ? sonRakam.uzunluk : 4;
     if (sonRakam && sonRakam.esik <= 60) uzunluk = Math.min(9, uzunluk + 1);
 
-    const adimlar = [];
-    if (HO.depo.testGerekli()) adimlar.push({ egz: 'test' });
+    const testGunu = HO.depo.testGerekli();
     // Isınma: dikkat egzersizleri sırayla döner.
     const isinma = [
       { egz: 'schulte', secenek: { boyut: 5 } },
@@ -21,21 +21,25 @@
       { egz: 'renk', secenek: { sure: 60 } },
       { egz: 'kelimeavi', secenek: { tur: 3 } },
     ][d % 4];
-    const gorus = [
-      { egz: d % 4 === 0 ? 'piramit-yukaridan' : 'piramit-asagidan', secenek: { hiz: 'oto', sure: 90, kaynak: 'program' } },
-      { egz: 'beliren-' + ['yatay', 'capraz', 'rastgele'][d % 3], secenek: { adet: 50 } },
-      { egz: 'cevresel-' + ['yatay', 'dikey', 'capraz'][d % 3], secenek: { deneme: 15 } },
-    ][d % 3];
-    adimlar.push(
+    const ters = d % 2;
+    return [
       isinma,
-      { egz: 'takip-' + ['yatay-sonsuzluk', 'yatay-zigzag', 'dikey-sonsuzluk', 'kum-saati', 'dikey-zigzag', 'sicrama'][d % 6], secenek: { sure: 60 } },
+      // Göz hareketleri: her gün dört takip
+      { egz: ters ? 'takip-dikey-sonsuzluk' : 'takip-yatay-sonsuzluk', secenek: { sure: 60 } },
+      { egz: ters ? 'takip-yatay-zigzag' : 'takip-dikey-zigzag', secenek: { sure: 60 } },
+      { egz: 'takip-kum-saati', secenek: { sure: 60 } },
+      { egz: 'takip-sicrama', secenek: { sure: 60 } },
+      // Görüş alanı ve flaş
       { egz: 'flas-' + ['rakam', 'kelime', 'siluet', 'harf', 'grup'][d % 5], secenek: { uzunluk, deneme: 20 } },
-      gorus,
+      { egz: 'cevresel-' + ['yatay', 'dikey', 'capraz'][d % 3], secenek: { deneme: 15 } },
+      { egz: 'beliren-' + ['yatay', 'capraz', 'rastgele'][d % 3], secenek: { adet: 50 } },
+      // Okuma teknikleri
+      { egz: ters ? 'piramit-asagidan' : 'piramit-yukaridan', secenek: { hiz: 'oto', sure: 90, kaynak: 'program' } },
       { egz: 'rehber-' + ['soluk', 'gizli', 'satir', 'silinen', 'dar'][d % 5], secenek: { hiz: 'oto', kaynak: 'program' } },
+      { egz: 'rsvp', secenek: { hiz: 'oto', kaynak: 'program' } },
       { egz: 'tarama', secenek: { adet: 2 } },
-      { egz: 'okuma', secenek: { kaynak: 'program' } }
-    );
-    return adimlar;
+      testGunu ? { egz: 'test' } : { egz: 'okuma', secenek: { kaynak: 'program' } },
+    ];
   };
 
   HO.gunlukCalistir = async function (kap, ctx) {
@@ -53,6 +57,8 @@
     }
     const tamam = durumlar.filter((x) => x.durum === 'bitti').length;
     HO.depo.sonucEkle('gunluk', { tamamlanan: tamam, adim: adimlar.length });
+    // Haftanın son okumasından sonra: hafta boyunca okunan metinlerin anlama soruları.
+    if (HO.depo.haftalikTestZamani()) await HO.ui.haftalikTest(kap, ctx);
     const ana = el('a', { class: 'dugme ana buyuk', href: '#/', text: 'Ana sayfa' });
     const ilerleme = el('a', { class: 'dugme ikincil', href: '#/ilerleme', text: 'İlerlemeyi gör' });
     kap.replaceChildren(

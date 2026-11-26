@@ -10,19 +10,7 @@
     return el('div', { class: 'kutucuk' }, el('div', { class: 'kutucuk-etiket', text: etiket }), el('div', { class: 'kutucuk-deger', text: deger }), alt ? el('div', { class: 'kutucuk-alt', text: alt }) : null);
   }
 
-  function planDurumu() {
-    const bas = HO.depo.planBaslangic();
-    if (!bas) return null;
-    const fark = u.dayDiff(bas, u.dayKey());
-    const dongu = Math.floor(fark / 28);
-    const donguBas = u.addDays(bas, dongu * 28);
-    const hafta = Math.floor((fark - dongu * 28) / 7) + 1;
-    const haftaBas = u.addDays(donguBas, (hafta - 1) * 7);
-    const gunlukGunler = new Set(HO.depo.sonuclar('gunluk').map((r) => r.gun));
-    let buHafta = 0;
-    for (let i = 0; i < 7; i++) if (gunlukGunler.has(u.addDays(haftaBas, i))) buHafta++;
-    return { bas, dongu, donguBas, hafta, buHafta, gunlukGunler };
-  }
+  const planDurumu = () => HO.depo.planDurumu();
 
   // Ana sayfadaki "odak akışı" görseli: satırlar merkezdeki odak noktasına akar.
   function odakGorseli() {
@@ -59,7 +47,7 @@
             null,
             el('div', { class: 'adim-yazi', text: 'Ücretsiz okuma antrenmanı' }),
             el('h1', null, 'Daha hızlı oku, ', el('em', { text: 'anlayarak' }), ' oku.'),
-            el('p', { text: 'Günde 15–20 dakikalık antrenman: göz hareketleri, dikkat, görüş alanı ve okuma teknikleri. Hızınız her zaman anlama sorularıyla birlikte ölçülür.' }),
+            el('p', { text: 'Günde 13 adımlık antrenman: göz hareketleri, dikkat, görüş alanı ve okuma teknikleri. Okuduğunuz metinlerin anlama soruları hafta sonunda topluca sorulur.' }),
             el('p', { class: 'soluk', text: 'İlk adım kısa bir seviye testi. Sonuçlarınız yalnız bu cihazda saklanır.' }),
             el('div', { class: 'dugmeler' }, el('a', { class: 'dugme ana buyuk', href: '#/egzersiz/test', text: 'Seviye testiyle başla' }), el('a', { class: 'dugme ikincil', href: '#/egzersizler', text: 'Egzersizlere göz at' }))
           ),
@@ -83,7 +71,7 @@
           null,
           el('div', { class: 'adim-yazi', text: `${plan.hafta}. hafta${plan.dongu ? ` · ${plan.dongu + 1}. tur` : ''} · Bu hafta ${plan.buHafta}/5 gün` }),
           el('h1', { text: bugunYapildi ? 'Bugünkü antrenmanınız tamam.' : 'Bugünkü antrenmanınız hazır.' }),
-          el('p', { text: bugunYapildi ? 'İsterseniz tekrar yapabilir ya da tek tek egzersiz seçebilirsiniz.' : `${adimlar.length} adım, yaklaşık ${Math.round(adimlar.length * 2.5)} dakika. İstediğiniz adımı atlayabilirsiniz.` }),
+          el('p', { text: bugunYapildi ? 'İsterseniz tekrar yapabilir ya da tek tek egzersiz seçebilirsiniz.' : `${adimlar.length} adım, yaklaşık ${Math.round(adimlar.length * 2)} dakika. İstediğiniz adımı atlayabilirsiniz.` }),
           el('div', { class: 'dugmeler' }, el('a', { class: 'dugme ' + (bugunYapildi ? 'ikincil' : 'ana buyuk'), href: '#/gunluk', text: bugunYapildi ? 'Yeniden yap' : 'Antrenmanı başlat' }))
         ),
         odakGorseli()
@@ -180,7 +168,7 @@
     { ad: '4 haftalık plan', aciklama: '20 gün günlük antrenman yaptınız.', kosul: () => HO.gunlukSayisi() >= 20 },
     { ad: 'Keskin göz', aciklama: '5 × 5 Schulte tablosunu 30 saniyenin altında bitirdiniz.', kosul: (d) => d.sonuclar('schulte').some((r) => r.boyut === 5 && r.sure < 30000) },
     { ad: 'Pilot gözü', aciklama: 'Pilot flaş eğitiminde 50 ms ya da altında eşiğe indiniz.', kosul: (d) => d.sonuclar('flas').some((r) => r.esik <= 50) },
-    { ad: 'Tam anlama', aciklama: 'Bir okuma testinde tüm soruları doğru cevapladınız.', kosul: (d) => [...d.sonuclar('test'), ...d.sonuclar('okuma')].some((r) => r.oran === 1) },
+    { ad: 'Tam anlama', aciklama: 'Bir okuma testinde tüm soruları doğru cevapladınız.', kosul: (d) => [...d.sonuclar('test'), ...d.sonuclar('okuma'), ...d.sonuclar('haftalik')].some((r) => r.oran === 1 && r.toplam > 0) },
     { ad: 'İz sürücü', aciklama: 'Akıllı taramada ortalama 10 saniyenin altına indiniz.', kosul: (d) => d.sonuclar('tarama').some((r) => r.ortSure && r.ortSure < 10000) },
   ];
 
@@ -218,7 +206,9 @@
     }
     const plan = planDurumu();
     const okumalar = d.sonuclar().filter((r) => (r.tur === 'test' || r.tur === 'okuma') && typeof r.etkili === 'number');
-    const etiket = (r) => (r.tur === 'test' ? 'Seviye testi' : 'Okuma');
+    const etiket = (r) => ({ test: 'Seviye testi', haftalik: 'Haftalık anlama testi' }[r.tur] || 'Okuma');
+    const anlamalar = d.sonuclar().filter((r) => (r.tur === 'test' || r.tur === 'okuma' || r.tur === 'haftalik') && typeof r.oran === 'number');
+    const hizlar = d.sonuclar().filter((r) => (r.tur === 'test' || r.tur === 'okuma') && r.kdk > 0);
     const kdk = (v, eksen) => (eksen ? u.num(v) : u.num(v) + ' kelime/dk');
     const yuzde = (v) => '%' + Math.round(v);
     const schulte = d.sonuclar('schulte').filter((r) => r.boyut === 5);
@@ -242,11 +232,12 @@
         'section',
         { class: 'grafikler' },
         HO.grafik('Etkili hız (kelime/dk)', okumalar.map((r) => ({ gun: r.gun, deger: r.etkili, etiket: etiket(r) })), kdk),
-        HO.grafik('Anlama (%)', okumalar.map((r) => ({ gun: r.gun, deger: r.oran * 100, etiket: etiket(r) })), yuzde, { ust: 100 }),
+        HO.grafik('Okuma hızı (kelime/dk)', hizlar.map((r) => ({ gun: r.gun, deger: r.kdk, etiket: etiket(r) })), kdk),
+        HO.grafik('Anlama (%)', anlamalar.map((r) => ({ gun: r.gun, deger: r.oran * 100, etiket: etiket(r) })), yuzde, { ust: 100 }),
         HO.grafik('Schulte 5 × 5 süresi (saniye)', schulte.map((r) => ({ gun: r.gun, deger: r.sure / 1000, etiket: r.hata + ' hata' })), (v, eksen) => (eksen ? Math.round(v) : v.toFixed(1).replace('.', ',')) + ' sn', { bos: 'Henüz 5 × 5 Schulte sonucu yok.' }),
         HO.grafik('Flaş eşiği, rakam dizisi (ms)', flas.map((r) => ({ gun: r.gun, deger: r.esik, etiket: r.uzunluk + ' rakam' })), (v) => Math.round(v) + ' ms', { bos: 'Henüz rakam dizisi sonucu yok.' }),
         HO.grafik('Burdon dikkat oranı (%)', burdon.map((r) => ({ gun: r.gun, deger: r.dikkat * 100, etiket: r.taranan + ' harf tarandı' })), yuzde, { ust: 100, bos: 'Henüz Burdon testi sonucu yok.' }),
-        HO.grafik('Çevresel görüş genişliği, yatay (%)', cevre.map((r) => ({ gun: r.gun, deger: r.genislik, etiket: r.gosterim + ' ms' })), yuzde, { ust: 100, bos: 'Henüz yatay çevresel harf görme sonucu yok.' })
+        HO.grafik('Çevresel görüş genişliği, yatay (%)', cevre.map((r) => ({ gun: r.gun, deger: r.genislik, etiket: r.hiz ? u.hizAdi(r.hiz) : r.gosterim + ' ms' })), yuzde, { ust: 100, bos: 'Henüz yatay çevresel harf görme sonucu yok.' })
       ),
       el(
         'section',
@@ -339,8 +330,8 @@
         'section',
         { class: 'kart' },
         el('h2', { text: 'Hakkında' }),
-        el('p', { text: 'Hızlı Oku ücretsiz ve açık kaynak bir okuma antrenman programıdır. Okuma hızı her zaman anlama sorularıyla birlikte ölçülür. Etkili hız = okuma hızı × anlama oranı.' }),
-        el('p', { class: 'soluk', text: 'Okuma metinleri bu program için özgün olarak yazılmıştır. Sürüm 0.5.0' })
+        el('p', { text: 'Hızlı Oku ücretsiz ve açık kaynak bir okuma antrenman programıdır. Hafta içi okunan metinlerin anlama soruları hafta sonundaki anlama testinde sorulur. Seviye testi hızı ve anlamayı birlikte ölçer: etkili hız = okuma hızı × anlama oranı.' }),
+        el('p', { class: 'soluk', text: 'Okuma metinleri bu program için özgün olarak yazılmıştır. Sürüm 0.6.0' })
       )
     );
   };

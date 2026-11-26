@@ -377,7 +377,8 @@
   };
 
   // Okuma testi akışı (seviye testi ve okuma egzersizi ortak).
-  ui.okumaTesti = async function (sahne, metin, ctx) {
+  // soruSor false ise yalnız hız ölçülür; metnin soruları hafta sonundaki anlama testine kalır.
+  ui.okumaTesti = async function (sahne, metin, ctx, soruSor = true) {
     const basla = el('button', { class: 'dugme ana buyuk', text: 'Başla' });
     sahne.replaceChildren(
       el(
@@ -385,7 +386,7 @@
         { class: 'kart' },
         el('h2', { text: 'Hazır olduğunuzda başlayın' }),
         el('p', { text: 'Başla düğmesine basınca metin görünür ve süre başlar. Metni her zamanki gibi, anlayarak okuyun.' }),
-        el('p', { text: 'Bitirince alttaki "Bitirdim" düğmesine basın. Ardından metinle ilgili sorular gelecek.' }),
+        el('p', { text: soruSor ? 'Bitirince alttaki "Bitirdim" düğmesine basın. Ardından metinle ilgili sorular gelecek.' : 'Bitirince alttaki "Bitirdim" düğmesine basın. Bu metnin soruları hafta sonundaki anlama testinde sorulacak.' }),
         el('div', { class: 'dugmeler' }, basla)
       )
     );
@@ -413,7 +414,7 @@
     }
     const karakter = u.charCount(yazi);
     const kdk = kelime / (sure / 60000);
-    const soruVar = metin.sorular && metin.sorular.length;
+    const soruVar = soruSor && ui.soruluMu(metin);
     const cevap = soruVar ? await ui.sorular(sahne, metin.sorular, ctx) : { dogru: null, toplam: 0, oran: null };
     return {
       metin: metin.id,
@@ -426,6 +427,7 @@
       oran: cevap.oran,
       etkili: soruVar ? Math.round(kdk * cevap.oran) : null,
       kendi: metin.kendi || undefined,
+      soruBekliyor: !soruSor && ui.soruluMu(metin) ? true : undefined,
     };
   };
 
@@ -442,14 +444,81 @@
     ['Süre', u.fmtClock(r.sure)],
     ['Okuma hızı', u.num(r.kdk) + ' kelime/dk'],
     ['Karakter hızı', u.num(r.kardk) + ' karakter/dk'],
-    ['Anlama', ui.anlamaYazi(r)],
-    ['Etkili hız', typeof r.etkili === 'number' ? u.num(r.etkili) + ' kelime/dk' : '-'],
+    ...(r.soruBekliyor
+      ? []
+      : [
+          ['Anlama', ui.anlamaYazi(r)],
+          ['Etkili hız', typeof r.etkili === 'number' ? u.num(r.etkili) + ' kelime/dk' : '-'],
+        ]),
   ];
   ui.okumaNotlar = (r) => {
+    if (r.soruBekliyor) return ['Bu okumada yalnız hız ölçüldü. Metnin anlama soruları hafta sonundaki anlama testinde sorulacak.'];
     if (typeof r.oran !== 'number') return ['Bu metnin anlama sorusu olmadığı için yalnız hız ölçüldü. Metinlerim sayfasından metne soru ekleyebilirsiniz.'];
     const n = ['Etkili hız = okuma hızı × anlama oranı.'];
     if (r.oran < 0.7) n.push('Anlama %70’in altında. Rehberle okumanın hedef hızı bu sonuçla artırılmayacak.');
     return n;
+  };
+
+  ui.soruluMu = (metin) => !!(metin && metin.sorular && metin.sorular.length);
+
+  // Okuma egzersizlerinin hız seçeneği: Otomatik ya da 1x–10x.
+  ui.hizSecenegi = () => ({
+    ad: 'hiz',
+    etiket: 'Hız',
+    degerler: () => [['oto', `Otomatik (${u.hizAdi(u.kdkHiz(HO.depo.rehberHedef()))})`], ...u.HIZLAR],
+    varsayilan: 'oto',
+  });
+  ui.okumaHizi = (secim) => (secim === 'oto' ? u.kdkHiz(HO.depo.rehberHedef()) : secim);
+  ui.hizYazi = (r) => (r.hiz ? `${u.hizAdi(r.hiz)} (${r.kdk} kelime/dk)` : r.kdk + ' kelime/dk');
+  ui.okumaEgzNotlar = (r) => [
+    r.soruBekliyor ? 'Bu metnin anlama soruları hafta sonundaki anlama testinde sorulacak.' : null,
+    `Otomatik hız şu an: ${u.hizAdi(u.kdkHiz(HO.depo.rehberHedef()))}.`,
+  ].filter(Boolean);
+
+  // Haftalık anlama testi: hafta boyunca okunan metinlerin soruları (metin başına en çok 2, toplam en çok 20).
+  ui.haftalikTest = async function (kap, ctx) {
+    const bekleyen = HO.depo.bekleyenMetinler();
+    const metinBul = (id) => HO.icerik.alistirma.find((m) => m.id === id) || HO.depo.kendiMetin(id);
+    const metinler = bekleyen.map(metinBul).filter(ui.soruluMu).slice(0, 10);
+    if (!metinler.length) {
+      HO.depo.sonucEkle('haftalik', { metinler: [], dogru: 0, toplam: 0, oran: null, bos: true });
+      return null;
+    }
+    const sorular = metinler.flatMap((m) => u.shuffle(m.sorular).slice(0, 2).map((s) => ({ ...s, soru: `“${m.baslik}”: ${s.soru}` })));
+    const basla = el('button', { class: 'dugme ana buyuk', text: 'Teste başla' });
+    kap.replaceChildren(
+      el(
+        'section',
+        { class: 'kart tanitim kat-anlama' },
+        el('div', { class: 'adim-yazi', text: 'Haftanın sonu' }),
+        el('h1', { text: 'Haftalık anlama testi' }),
+        el('p', { text: `Bu hafta okuduğunuz ${metinler.length} metinden ${sorular.length} soru gelecek. Metinlere geri dönülemez; hatırladığınız kadarıyla cevaplayın.` }),
+        el('div', { class: 'dugmeler' }, basla)
+      )
+    );
+    window.scrollTo(0, 0);
+    basla.focus();
+    await ctx.click(basla);
+    const sahne = el('div', { class: 'sahne' });
+    kap.replaceChildren(sahne);
+    const cevap = await ui.sorular(sahne, sorular, ctx, 'Haftalık anlama testi');
+    const kayit = HO.depo.sonucEkle('haftalik', { metinler: metinler.map((m) => m.id), dogru: cevap.dogru, toplam: cevap.toplam, oran: cevap.oran });
+    const devam = el('button', { class: 'dugme ana buyuk', text: 'Devam' });
+    kap.replaceChildren(
+      el(
+        'section',
+        { class: 'kart sonuc' },
+        el('div', { class: 'sonuc-isaret', 'aria-hidden': 'true', text: '✓' }),
+        el('h1', { text: 'Haftalık anlama testi: sonuç' }),
+        el('dl', { class: 'olcumler' }, el('div', { class: 'olcum' }, el('dt', { text: 'Anlama' }), el('dd', { text: ui.anlamaYazi(kayit) })), el('div', { class: 'olcum' }, el('dt', { text: 'Metin' }), el('dd', { text: String(metinler.length) }))),
+        el('p', { class: 'not', text: cevap.oran < 0.7 ? 'Anlama %70’in altında. Rehberli okumaların otomatik hızı bir basamak düşürüldü.' : `Rehberli okumaların otomatik hızı: ${u.hizAdi(u.kdkHiz(HO.depo.rehberHedef()))}.` }),
+        el('div', { class: 'dugmeler' }, devam)
+      )
+    );
+    window.scrollTo(0, 0);
+    devam.focus();
+    await ctx.click(devam);
+    return kayit;
   };
 
   HO.ui = ui;

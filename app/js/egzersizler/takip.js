@@ -84,7 +84,7 @@
     ],
     secenekler: [
       { ad: 'desen', etiket: 'Desen', degerler: Object.entries(DESENLER), varsayilan: 'yatay-sonsuzluk' },
-      { ad: 'hiz', etiket: 'Hız', degerler: [['yavas', 'Yavaş'], ['orta', 'Orta'], ['hizli', 'Hızlı']], varsayilan: 'orta' },
+      { ad: 'hiz', etiket: 'Hız', degerler: u.HIZLAR, varsayilan: 3 },
       { ad: 'sure', etiket: 'Süre', degerler: [[30, '30 saniye'], [60, '1 dakika'], [90, '1,5 dakika'], [120, '2 dakika']], varsayilan: 60 },
       { ad: 'iz', etiket: 'Yol çizgisi', degerler: [['evet', 'Göster'], ['hayir', 'Gizle']], varsayilan: 'evet' },
     ],
@@ -110,8 +110,9 @@
       const renkNokta = stil.getPropertyValue('--odak').trim() || '#e0702e';
       const renkIz = stil.getPropertyValue('--cizgi').trim() || '#ccc';
 
-      const periyot = { yavas: 9000, orta: 6000, hizli: 3800 }[s.hiz] * (YOLLAR[s.desen] ? 2 : 1);
-      const sicramaAralik = { yavas: 1000, orta: 700, hizli: 450 }[s.hiz];
+      // 1x = eski yavaş, 5x = eski hızlı ayar.
+      const periyot = u.hizSure(s.hiz, 9000, 3800) * (YOLLAR[s.desen] ? 2 : 1);
+      const sicramaAralik = u.hizSure(s.hiz, 1000, 450);
       const sureMs = s.sure * 1000;
 
       const konum = (t) => {
@@ -183,7 +184,7 @@
     },
     ozet: (r) => [
       ['Desen', DESENLER[r.desen]],
-      ['Hız', { yavas: 'Yavaş', orta: 'Orta', hizli: 'Hızlı' }[r.hiz]],
+      ['Hız', typeof r.hiz === 'number' ? u.hizAdi(r.hiz) : { yavas: 'Yavaş', orta: 'Orta', hizli: 'Hızlı' }[r.hiz]],
       ['Süre', r.saniye + ' saniye'],
     ],
   };

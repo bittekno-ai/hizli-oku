@@ -1,11 +1,13 @@
 # Hızlı Oku
 
-Ücretsiz ve açık kaynak bir okuma antrenman programı. Lise öğrencileri ve yetişkinler için; 6 kategoride 33 egzersiz. Tarayıcıda (Mac, Windows, telefon) ve masaüstü uygulaması olarak çalışır. Okuma hızı her zaman anlama sorularıyla birlikte ölçülür: **etkili hız = dakikadaki kelime × anlama oranı**.
+Ücretsiz ve açık kaynak bir okuma antrenman programı. Lise öğrencileri ve yetişkinler için; 6 kategoride 34 egzersiz. Tarayıcıda (Mac, Windows, telefon) ve masaüstü uygulaması olarak çalışır. Hafta içi okunan metinlerin anlama soruları hafta sonundaki anlama testinde topluca sorulur. Seviye testi hızı ve anlamayı birlikte ölçer: **etkili hız = dakikadaki kelime × anlama oranı**.
 
 ## İçindekiler
 
 - **Seviye testi:** Kısa bir metni kendi hızınızda okuyup 5 soru cevaplarsınız. Dakikada kelime, dakikada karakter, anlama ve etkili hız gösterilir. Her hafta başında tekrarlanır.
-- **Günlük antrenman (15–20 dk):** Aşağıdaki egzersizleri otomatik sırayla yaptırır. Desenler günden güne değişir.
+- **Günlük antrenman (13 adım, yaklaşık 25 dk):** Bir dikkat ısınması, dört göz takibi, flaş, çevresel görme, beliren kelimeler ve beş okuma adımı. Desenler günden güne değişir. Seviye testi günü son adım seviye testidir.
+- **Haftalık anlama testi:** Okuma egzersizlerinin sonunda soru sorulmaz. Haftanın 5. antrenman gününün sonunda, o hafta okunan metinlerden sorular gelir (metin başına 2, en çok 20 soru). Sonuç %70'in altındaysa rehberli okumanın otomatik hızı bir basamak düşer.
+- **Hız ayarı:** Hızlı egzersizlerin hepsinde hız 1x ile 10x arasında seçilir (1x en yavaş). Okuma egzersizlerinde 1x = 150, her basamak +50 kelime/dk (10x = 600).
 - **Egzersizler:**
   - Schulte tablosu
   - Burdon dikkat testi
@@ -14,15 +16,15 @@
   - Göz takibi: yatay ve dikey sonsuzluk, yatay ve dikey zigzag, kum saati, kayan noktalar
   - Çevresel harf görme: yatay, dikey, çapraz
   - Beliren kelimeler: yatay, çapraz, rastgele
-  - Pilot flaş eğitimi: İkinci Dünya Savaşı'nda pilotlara uygulanan Renshaw takistoskop yöntemine dayanan, uyarlamalı süreli rakam dizisi, harf dizisi, kelime ve kelime grubu tanıma
+  - Pilot flaş eğitimi: İkinci Dünya Savaşı'nda pilotlara uygulanan Renshaw takistoskop yöntemine dayanan, uyarlamalı süreli rakam dizisi, harf dizisi, kelime ve kelime grubu tanıma; kurgusal uçak, gemi ve hayvan silueti tanıma
   - Çam ağacı: yukarıdan aşağı ve aşağıdan yukarı
   - Rehberle okuma: soluk metin, gizli metin, silinen metin, satır vurgusu, dar sütun; isteğe bağlı metronom
   - Akıllı tarama
   - Anlama teknikleri: anahtar kelime bulma, 5N1K
   - Tek nokta okuma (RSVP)
-  - Okuma ve anlama
+  - Okuma hızı
 - **Metinlerim:** Kendi metninizi (kitap bölümü, ders notu) ekleyip isterseniz çoktan seçmeli sorular yazabilir, okuma egzersizlerinde kullanabilirsiniz. Metinler yalnız sizin cihazınızda kalır.
-- **İlerleme:** Etkili hız, anlama, Schulte süresi, flaş eşiği, Burdon dikkat oranı ve çevresel görüş genişliği grafikleri; 4 haftalık plan takvimi, seri ve rozetler.
+- **İlerleme:** Etkili hız, okuma hızı, anlama (seviye testi ve haftalık test), Schulte süresi, flaş eşiği, Burdon dikkat oranı ve çevresel görüş genişliği grafikleri; 4 haftalık plan takvimi, seri ve rozetler.
 
 Sonuçlar yalnız kendi cihazınızda saklanır. Hesap, sunucu, reklam ya da takip kodu yoktur. Ayarlar sayfasından yedek alıp başka cihaza taşıyabilirsiniz.
 

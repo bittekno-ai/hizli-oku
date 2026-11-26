@@ -20,12 +20,7 @@
     secenekler: [
       { ad: 'yon', etiket: 'Yön', degerler: Object.entries(YONLER), varsayilan: 'yukaridan' },
       { ad: 'enCok', etiket: 'En geniş satır', degerler: [[4, '4 kelime'], [5, '5 kelime'], [6, '6 kelime'], [7, '7 kelime']], varsayilan: 5 },
-      {
-        ad: 'hiz',
-        etiket: 'Hız',
-        degerler: [['oto', () => `Hedef hız (${HO.depo.rehberHedef()} kelime/dk)`], [150, '150 kelime/dk'], [200, '200 kelime/dk'], [250, '250 kelime/dk'], [300, '300 kelime/dk'], [400, '400 kelime/dk']],
-        varsayilan: 'oto',
-      },
+      HO.ui.hizSecenegi(),
       { ad: 'sure', etiket: 'Süre', degerler: [[60, '1 dakika'], [90, '1,5 dakika'], [120, '2 dakika']], varsayilan: 90 },
       {
         ad: 'kaynak',
@@ -35,7 +30,8 @@
       },
     ],
     async calistir(sahne, s, ctx, { bilgi }) {
-      const kdk = s.hiz === 'oto' ? HO.depo.rehberHedef() : s.hiz;
+      const hiz = HO.ui.okumaHizi(s.hiz);
+      const kdk = u.hizKdk(hiz);
       // Sorusuz serbest metinler: okuma testlerinde kullanılacak metinler önceden görülmesin.
       const metin = (s.kaynak !== 'program' && HO.depo.kendiMetin(s.kaynak)) || u.pick(HO.icerik.serbest);
       const kelimeler = u.words(u.metinYazi(metin));
@@ -68,7 +64,7 @@
           satirlar[j].classList.add('aktif');
           let ms = 0;
           for (let k = r.bas; k < r.son; k++) ms += agirlik[k] * birim;
-          bilgi.textContent = `${kdk} kelime/dk · Kalan: ${u.fmtClock(Math.max(0, sureMs - (performance.now() - t0)))}`;
+          bilgi.textContent = `${u.hizAdi(hiz)} · Kalan: ${u.fmtClock(Math.max(0, sureMs - (performance.now() - t0)))}`;
           await ctx.wait(ms);
           satirlar[j].classList.remove('aktif');
           satirlar[j].classList.add('okundu');
@@ -77,12 +73,12 @@
         }
         await ctx.wait(250);
       }
-      return { yon: s.yon, enCok: s.enCok, kdk, kelime: okunan, sure: Math.round(performance.now() - t0) };
+      return { yon: s.yon, enCok: s.enCok, hiz, kdk, kelime: okunan, sure: Math.round(performance.now() - t0) };
     },
     ozet: (r) => [
       ['Yön', YONLER[r.yon]],
       ['En geniş satır', r.enCok + ' kelime'],
-      ['Hız', r.kdk + ' kelime/dk'],
+      ['Hız', HO.ui.hizYazi(r)],
       ['Okunan', r.kelime + ' kelime'],
     ],
   };

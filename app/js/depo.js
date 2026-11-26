@@ -96,15 +96,53 @@
       return null;
     },
 
-    // Rehberle okuma hedef hızı: son etkili hızın %12 üstü.
-    // Son rehberli okumada anlama %70'in altındaysa bir basamak (%10) geri çekilir.
+    // Rehberle okuma hedef hızı (kelime/dk): son etkili hızın %12 üstü.
+    // Son haftalık anlama testinde anlama %70'in altındaysa, o haftaki son rehberli hızın bir basamak altına iner.
     rehberHedef() {
       const taban = depo.sonEtkiliHiz();
       let h = taban ? taban * 1.12 : 200;
-      const sonR = depo.son('rehber', (r) => typeof r.oran === 'number');
-      if (sonR && sonR.oran < 0.7) h = Math.min(h, sonR.kdk * 0.9);
-      // (anlama sorusu olmayan kendi metinlerle yapılan okumalar hedefi etkilemez)
+      const hafta = depo.son('haftalik', (r) => typeof r.oran === 'number');
+      if (hafta && hafta.oran < 0.7) {
+        const sonR = depo.son('rehber', (r) => r.zaman <= hafta.zaman && r.kdk > 0);
+        if (sonR) h = Math.min(h, sonR.kdk - 50);
+      }
       return u.clamp(u.round5(h), 80, 1500);
+    },
+
+    // Haftalık plan: plan başlangıcından itibaren 7 günlük haftalar, 4 haftalık turlar.
+    planDurumu(gun = u.dayKey()) {
+      const bas = depo.planBaslangic();
+      if (!bas) return null;
+      const fark = u.dayDiff(bas, gun);
+      const dongu = Math.floor(fark / 28);
+      const donguBas = u.addDays(bas, dongu * 28);
+      const hafta = Math.floor((fark - dongu * 28) / 7) + 1;
+      const haftaBas = u.addDays(donguBas, (hafta - 1) * 7);
+      const gunlukGunler = new Set(depo.sonuclar('gunluk').map((r) => r.gun));
+      let buHafta = 0;
+      for (let i = 0; i < 7; i++) if (gunlukGunler.has(u.addDays(haftaBas, i))) buHafta++;
+      return { bas, dongu, donguBas, hafta, haftaBas, buHafta, gunlukGunler };
+    },
+
+    // Soruları hafta sonuna bırakılmış, henüz sorulmamış okumalar (en yeni önce, tekrarsız metin kimlikleri).
+    bekleyenOkumalar() {
+      const sonTest = depo.son('haftalik');
+      const sinir = sonTest ? sonTest.zaman : 0;
+      return veri.sonuclar.filter((r) => r.soruBekliyor && r.zaman > sinir);
+    },
+    bekleyenMetinler() {
+      return [...new Set(depo.bekleyenOkumalar().map((r) => r.metin).reverse())];
+    },
+    // Haftalık anlama testi zamanı mı? (a) bu hafta 5. antrenman günü tamamlandıysa,
+    // (b) geçmiş bir haftadan sorusu sorulmamış okuma kaldıysa.
+    haftalikTestZamani() {
+      const bekleyen = depo.bekleyenOkumalar();
+      if (!bekleyen.length) return false;
+      const plan = depo.planDurumu();
+      if (!plan) return false;
+      const buHaftaYapildi = !!depo.son('haftalik', (r) => r.gun >= plan.haftaBas);
+      if (plan.buHafta >= 5 && !buHaftaYapildi) return true;
+      return bekleyen.some((r) => r.gun < plan.haftaBas);
     },
 
     // Az kullanılan metni seç; hiç okunmamışlar önce gelir.

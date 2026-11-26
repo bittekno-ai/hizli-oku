@@ -16,7 +16,7 @@
     const metinler = HO.depo.kendiMetinler();
     kap.replaceChildren(
       el('h1', { text: 'Metinlerim' }),
-      el('p', { class: 'soluk', text: 'Kendi metinlerinizi (kitaptan bir bölüm, ders notu, makale) ekleyip onlarla çalışabilirsiniz. Okuma ve anlama, Rehberle okuma, Tek nokta okuma ve Çam ağacı egzersizlerinde "Metin" seçeneğinden seçilir. Metinler yalnız bu cihazda saklanır.' }),
+      el('p', { class: 'soluk', text: 'Kendi metinlerinizi (kitaptan bir bölüm, ders notu, makale) ekleyip onlarla çalışabilirsiniz. Okuma hızı, Rehberle okuma, Tek nokta okuma ve Çam ağacı egzersizlerinde "Metin" seçeneğinden seçilir. Metinler yalnız bu cihazda saklanır.' }),
       el('div', { class: 'dugmeler sola' }, el('a', { class: 'dugme ana', href: '#/metinlerim/yeni', text: '+ Yeni metin ekle' })),
       metinler.length
         ? el(

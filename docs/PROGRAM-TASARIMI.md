@@ -56,7 +56,8 @@
 - Tüm MVP modülleri ve kurs egzersizleri kodlandı (bkz. README).
 - Seviye testi metinleri 270–330 kelime oldu (Türkçede kelimeler uzun olduğu için 400 yerine). Alıştırma metinleri 160–180 kelime, 4 soru (%70 eşiği 3 soruyla ölçülemediği için 4).
 - İçerik: 4 test + 10 alıştırma + 3 serbest metin. 30+ hedefi sonraki iş.
-- Rehber hedef hızı: son etkili hız × 1,12. Son rehberli okumada anlama %70 altıysa o hızın %90'ı.
+- Rehber hedef hızı: son etkili hız × 1,12, en yakın hız basamağına (1x–10x) yuvarlanır. Son haftalık anlama testi %70 altıysa, o haftaki son rehberli hızın bir basamak (50 kelime/dk) altı.
+- 2026-11-26 (Ömer Bey'in isteği, 0.6.0): günlük antrenman 13 adım ve ağırlık göz egzersizlerinde; okuma egzersizlerinin sonundaki anlama soruları kaldırıldı, sorular haftanın 5. antrenman gününün sonunda haftalık anlama testinde soruluyor (seviye testi sorularıyla kaldı); tüm hız ayarları 1x–10x (1x = eski yavaş, 5x = eski hızlı).
 - Flaş: kare sayısıyla gösterim (requestAnimationFrame), doğruda süre ×0,8, yanlışta ×1,25, alt sınır 1 kare. Eşik = son 6 denemenin ortalaması. Ekranın tamamı yanıp sönmez; yalnız ortadaki kutu.
 - Siluet aşaması Codex görselleri gelince eklenecek (`varliklar/istekler/siluetler.md`).
 

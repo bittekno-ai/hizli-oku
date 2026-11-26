@@ -24,10 +24,11 @@
     ],
     secenekler: [
       { ad: 'yon', etiket: 'Yön', degerler: Object.entries(YONLER), varsayilan: 'yatay' },
-      { ad: 'gosterim', etiket: 'Görünme süresi', degerler: [[120, '120 ms'], [180, '180 ms'], [250, '250 ms']], varsayilan: 180 },
+      { ad: 'hiz', etiket: 'Hız', degerler: u.HIZLAR, varsayilan: 2 },
       { ad: 'deneme', etiket: 'Deneme sayısı', degerler: [[15, '15'], [20, '20'], [30, '30']], varsayilan: 20 },
     ],
     async calistir(sahne, s, ctx, { bilgi }) {
+      const gosterim = u.hizSure(s.hiz, 250, 120); // 1x = 250 ms, 5x = 120 ms
       const alan = el('div', { class: 'cevre-alan' });
       const merkez = el('div', { class: 'cevre-harf' });
       const h1 = el('div', { class: 'cevre-harf' });
@@ -69,7 +70,7 @@
         await ctx.frame();
         goster(...hedef);
         const t0 = await ctx.frame();
-        while ((await ctx.frame()) - t0 < s.gosterim - 8);
+        while ((await ctx.frame()) - t0 < gosterim - 8);
         goster('#', '#', '#');
         await ctx.wait(200);
         goster('', '', '');
@@ -98,7 +99,8 @@
       const dogrular = denemeler.filter((x) => x.dogru);
       return {
         yon: s.yon,
-        gosterim: s.gosterim,
+        hiz: s.hiz,
+        gosterim: Math.round(gosterim),
         deneme: denemeler.length,
         dogru: dogrular.length,
         genislik: Math.round((son6.reduce((a, b) => a + b.d, 0) / son6.length) * 100),
@@ -107,7 +109,7 @@
     },
     ozet: (r) => [
       ['Yön', YONLER[r.yon]],
-      ['Görünme süresi', r.gosterim + ' ms'],
+      ['Hız', r.hiz ? u.hizAdi(r.hiz) : r.gosterim + ' ms'],
       ['Doğru', `${r.deneme} denemede ${r.dogru}`],
       ['Görüş genişliği', '%' + r.genislik],
       ['En uzak doğru', r.enGenis ? '%' + r.enGenis : '-'],

@@ -1,5 +1,5 @@
 'use strict';
-// Seviye testi (uzun metin, 5 soru) ve okuma-anlama egzersizi (kısa metin, 4 soru).
+// Seviye testi (uzun metin, 5 soru) ve okuma hızı egzersizi (kısa metin; soruları hafta sonundaki anlama testinde).
 (function () {
   HO.egz = HO.egz || {};
 
@@ -24,19 +24,19 @@
 
   HO.egz.okuma = {
     id: 'okuma',
-    ad: 'Okuma ve anlama',
-    kisa: 'Kendi hızınızda okuyup soruları cevaplayın.',
-    sure: '3–5 dk',
+    ad: 'Okuma hızı',
+    kisa: 'Kendi hızınızda okuyun, hızınızı ölçün.',
+    sure: '2–3 dk',
     nasil: [
       'Kısa bir metni her zamanki gibi, anlayarak okuyun.',
-      'Ardından 4 soru gelir. Metne geri dönülemez.',
-      'Etkili hız (okuma hızı × anlama) ilerleme grafiğinize eklenir.',
+      'Okuma hızınız ölçülür ve ilerleme grafiğinize eklenir.',
+      'Metnin anlama soruları hemen değil, hafta sonundaki anlama testinde sorulur. Bu yüzden okuduğunuzu aklınızda tutmaya çalışın.',
       'Metinlerim sayfasından eklediğiniz kendi metninizi de seçebilirsiniz.',
     ],
     secenekler: [HO.ui.metinSecenegi()],
     async calistir(sahne, s, ctx) {
       const metin = HO.depo.metinKaynak(s.kaynak, HO.icerik.alistirma);
-      return HO.ui.okumaTesti(sahne, metin, ctx);
+      return HO.ui.okumaTesti(sahne, metin, ctx, false);
     },
     ozet: (r) => HO.ui.okumaOzet(r),
     notlar: (r) => HO.ui.okumaNotlar(r),

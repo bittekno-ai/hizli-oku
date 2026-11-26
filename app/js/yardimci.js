@@ -40,6 +40,16 @@ window.HO = window.HO || {};
   u.clamp = (x, a, b) => Math.max(a, Math.min(b, x));
   u.round5 = (x) => Math.round(x / 5) * 5;
 
+  // Hız basamakları: tüm egzersizlerde hız 1x–10x olarak seçilir.
+  // 1x eski "yavaş", 5x eski "hızlı" ayara denk gelir; 6x–10x aynı artışla devam eder (doğrusal hız).
+  u.HIZLAR = Array.from({ length: 10 }, (_, i) => [i + 1, `${i + 1}x Hız`]);
+  u.hizAdi = (n) => `${n}x Hız`;
+  // Süreli egzersizler için: 1x'teki ve 5x'teki süre (ms) verilir, n. basamağın süresi döner.
+  u.hizSure = (n, yavasMs, hizliMs) => 1 / (1 / yavasMs + ((n - 1) / 4) * (1 / hizliMs - 1 / yavasMs));
+  // Okuma egzersizleri için: 1x = 150, her basamak +50 kelime/dk (10x = 600).
+  u.hizKdk = (n) => 100 + 50 * n;
+  u.kdkHiz = (kdk) => u.clamp(Math.round((kdk - 100) / 50), 1, 10);
+
   const pad = (n) => String(n).padStart(2, '0');
   u.dayKey = (d = new Date()) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
   u.keyToDate = (k) => new Date(k + 'T12:00:00');

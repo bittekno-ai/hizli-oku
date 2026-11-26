@@ -49,10 +49,11 @@
     ],
     secenekler: [
       { ad: 'desen', etiket: 'Desen', degerler: Object.entries(DESENLER), varsayilan: 'yatay' },
-      { ad: 'gosterim', etiket: 'Görünme süresi', degerler: [[800, '800 ms'], [600, '600 ms'], [450, '450 ms'], [300, '300 ms']], varsayilan: 600 },
+      { ad: 'hiz', etiket: 'Hız', degerler: u.HIZLAR, varsayilan: 2 },
       { ad: 'adet', etiket: 'Kelime sayısı', degerler: [[30, '30'], [50, '50'], [80, '80']], varsayilan: 50 },
     ],
     async calistir(sahne, s, ctx, { bilgi }) {
+      const gosterim = u.hizSure(s.hiz, 800, 300); // 1x = 800 ms, 5x = 300 ms
       const havuz = u.shuffle(HO.icerik.kelimeler);
       const kelimeler = havuz.slice(0, s.adet);
       const gorulmeyen = havuz.slice(s.adet, s.adet + 4);
@@ -69,7 +70,7 @@
         k.textContent = kelimeler[i];
         k.style.visibility = 'visible';
         bilgi.textContent = `${i + 1} / ${kelimeler.length}`;
-        await ctx.wait(s.gosterim);
+        await ctx.wait(gosterim);
         k.style.visibility = 'hidden';
         await ctx.wait(150);
       }
@@ -90,11 +91,11 @@
       form.querySelectorAll('input').forEach((inp, i) => {
         if (inp.checked === secenek[i][1]) dogru++;
       });
-      return { desen: s.desen, gosterim: s.gosterim, adet: s.adet, dogru, toplam: secenek.length };
+      return { desen: s.desen, hiz: s.hiz, gosterim: Math.round(gosterim), adet: s.adet, dogru, toplam: secenek.length };
     },
     ozet: (r) => [
       ['Desen', DESENLER[r.desen]],
-      ['Görünme süresi', r.gosterim + ' ms'],
+      ['Hız', r.hiz ? u.hizAdi(r.hiz) : r.gosterim + ' ms'],
       ['Kelime sayısı', String(r.adet)],
       ['Kontrol', `${r.toplam} işaretten ${r.dogru} doğru`],
     ],
