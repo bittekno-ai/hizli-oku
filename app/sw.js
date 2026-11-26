@@ -1,6 +1,6 @@
 'use strict';
 // Çevrimdışı kullanım için önbellek. Yeni sürümde SURUM değiştirilir.
-const SURUM = 'hizlioku-0.6.0';
+const SURUM = 'hizlioku-0.6.1';
 const DOSYALAR = [
   './',
   'index.html',
@@ -19,6 +19,7 @@ const DOSYALAR = [
   'ikonlar/ikon-apple-180.png',
   'icerik/kelimeler.js',
   'icerik/metinler.js',
+  'icerik/metinler2.js',
   'icerik/anlama.js',
   'icerik/siluetler.js',
   'siluet/gemi-01.png',

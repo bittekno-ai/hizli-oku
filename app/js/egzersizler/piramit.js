@@ -32,8 +32,9 @@
     async calistir(sahne, s, ctx, { bilgi }) {
       const hiz = HO.ui.okumaHizi(s.hiz);
       const kdk = u.hizKdk(hiz);
-      // Sorusuz serbest metinler: okuma testlerinde kullanılacak metinler önceden görülmesin.
-      const metin = (s.kaynak !== 'program' && HO.depo.kendiMetin(s.kaynak)) || u.pick(HO.icerik.serbest);
+      // Serbest metinler ve alıştırma metinleri (seviye testi metinleri önceden görülmesin diye kullanılmaz).
+      // En az kullanılan metin seçilir, böylece aynı metin üst üste gelmez.
+      const metin = (s.kaynak !== 'program' && HO.depo.kendiMetin(s.kaynak)) || HO.depo.metinSec([...HO.icerik.serbest, ...HO.icerik.alistirma]);
       const kelimeler = u.words(u.metinYazi(metin));
       const agirlik = u.kelimeAgirliklari(kelimeler);
       const birim = 60000 / kdk;
