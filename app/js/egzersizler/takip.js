@@ -94,11 +94,13 @@
       const c2 = tuval.getContext('2d');
       let w = 0;
       let h = 0;
+      let olcek = 1; // geniş/tam ekranda nokta ve çizgi de büyür
       const boyutla = () => {
         const r = tuval.getBoundingClientRect();
         const dpr = window.devicePixelRatio || 1;
         w = r.width;
         h = r.height;
+        olcek = HO.ui.olcek ? HO.ui.olcek() : 1;
         tuval.width = Math.round(w * dpr);
         tuval.height = Math.round(h * dpr);
         c2.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -132,7 +134,7 @@
       const izCiz = () => {
         if (s.iz !== 'evet' || s.desen === 'sicrama') return;
         c2.strokeStyle = renkIz;
-        c2.lineWidth = 2;
+        c2.lineWidth = 2 * olcek;
         c2.beginPath();
         if (s.desen === 'kum-saati' || YOLLAR[s.desen]) {
           (YOLLAR[s.desen] || KUM).forEach(([x, y], i) => (i ? c2.lineTo(x * w, y * h) : c2.moveTo(x * w, y * h)));
@@ -149,7 +151,7 @@
       const noktaCiz = (x, y) => {
         c2.fillStyle = renkNokta;
         c2.beginPath();
-        c2.arc(x, y, 12, 0, Math.PI * 2);
+        c2.arc(x, y, 12 * olcek, 0, Math.PI * 2);
         c2.fill();
       };
 

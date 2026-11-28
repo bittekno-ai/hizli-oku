@@ -331,7 +331,7 @@
         { class: 'kart' },
         el('h2', { text: 'Hakkında' }),
         el('p', { text: 'Hızlı Oku ücretsiz ve açık kaynak bir okuma antrenman programıdır. Hafta içi okunan metinlerin anlama soruları hafta sonundaki anlama testinde sorulur. Seviye testi hızı ve anlamayı birlikte ölçer: etkili hız = okuma hızı × anlama oranı.' }),
-        el('p', { class: 'soluk', text: 'Okuma metinleri bu program için özgün olarak yazılmıştır. Sürüm 0.6.1' })
+        el('p', { class: 'soluk', text: 'Okuma metinleri bu program için özgün olarak yazılmıştır. Sürüm 0.7.0' })
       )
     );
   };

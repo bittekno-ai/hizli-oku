@@ -8,7 +8,7 @@
   ui.ayarlariUygula = function () {
     const a = HO.depo.ayarlar;
     const kok = document.documentElement;
-    kok.style.setProperty('--okuma-boyu', a.yaziBoyu + 'px');
+    kok.style.setProperty('--okuma-boyu', 'calc(' + a.yaziBoyu + 'px * var(--olcek, 1))');
     kok.style.setProperty('--okuma-aralik', a.satirAraligi);
     kok.dataset.tema = a.tema;
     kok.dataset.hareket = a.hareket || 'sistem';
@@ -264,6 +264,146 @@
 
   // Bir egzersizi baştan sona çalıştırır: tanıtım, uyarı, egzersiz, sonuç.
   // Döndürür: {durum: 'bitti'|'atlandi'|'iptal', sonuc}
+  // ---------- Ekran modu: normal | genis (pencereyi kaplar) | tam (tüm ekran) ----------
+  // Egzersiz çalışırken uygulanır. Büyük modlarda kök yazı boyu (--olcek) ekrana göre büyür,
+  // böylece rem ile ölçülen her şey (harfler, kutular, ızgaralar) birlikte büyür.
+  const ekran = { aktif: false, tauriTam: false, bilgiKap: null, guncelle: null };
+  const tamEkranAcikMi = () => !!(document.fullscreenElement || document.webkitFullscreenElement || ekran.tauriTam);
+  const tauriPencere = () => {
+    const t = window.__TAURI__;
+    return t && t.window && t.window.getCurrentWindow ? t.window.getCurrentWindow() : null;
+  };
+  async function tamEkranAc() {
+    const k = document.documentElement;
+    const istek = k.requestFullscreen || k.webkitRequestFullscreen;
+    if (istek && (document.fullscreenEnabled || document.webkitFullscreenEnabled)) {
+      try {
+        await istek.call(k);
+        return true;
+      } catch (e) {
+        /* tarayıcı izin vermedi; aşağıdaki yolu dene */
+      }
+    }
+    const w = tauriPencere();
+    if (w) {
+      try {
+        await w.setFullscreen(true);
+        ekran.tauriTam = true;
+        return true;
+      } catch (e) {
+        /* masaüstü penceresi tam ekrana geçemedi */
+      }
+    }
+    return false;
+  }
+  async function tamEkranKapat() {
+    if (ekran.tauriTam) {
+      ekran.tauriTam = false;
+      const w = tauriPencere();
+      if (w) await w.setFullscreen(false).catch(() => {});
+    }
+    if (document.fullscreenElement && document.exitFullscreen) await document.exitFullscreen().catch(() => {});
+    else if (document.webkitFullscreenElement && document.webkitExitFullscreen) document.webkitExitFullscreen();
+  }
+  ui.ekranModu = () => HO.depo.ayarlar.ekranModu || 'normal';
+  ui.olcek = () => parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--olcek')) || 1;
+
+  // Sınıfları, ölçeği ve sahne yüksekliğini o anki moda göre yeniden hesaplar.
+  function ekranUygula() {
+    const kok = document.documentElement;
+    const b = document.body;
+    const mod = ekran.aktif ? ui.ekranModu() : 'normal';
+    const tam = mod === 'tam' && tamEkranAcikMi();
+    const buyuk = mod === 'genis' || tam;
+    b.classList.toggle('ekran-buyuk', buyuk);
+    b.classList.toggle('ekran-tam', tam);
+    if (!buyuk) {
+      kok.style.removeProperty('--olcek');
+      kok.style.removeProperty('--sahne-h');
+    } else {
+      // Normal görünüm yaklaşık 900×700 piksellik bir alana göre tasarlandı.
+      const olcek = Math.max(1, Math.min((window.innerWidth - 48) / 900, window.innerHeight / 760, 2.4));
+      kok.style.setProperty('--olcek', olcek.toFixed(3));
+      const sahne = document.querySelector('.sahne');
+      const ust = sahne ? sahne.getBoundingClientRect().top + window.scrollY : 0;
+      kok.style.setProperty('--sahne-h', Math.max(320, window.innerHeight - ust - 12) + 'px');
+    }
+    if (ekran.guncelle) ekran.guncelle();
+    // Tuval gibi boyutunu kendi ölçen egzersizler yeniden ölçsün.
+    window.dispatchEvent(new Event('resize'));
+  }
+  let olcuyor = false;
+  const yenidenOlc = () => {
+    if (olcuyor) return;
+    olcuyor = true;
+    requestAnimationFrame(() => {
+      olcuyor = false;
+      ekranUygula();
+    });
+  };
+  window.addEventListener('resize', (e) => {
+    if (e.isTrusted && ekran.aktif) yenidenOlc();
+  });
+  const tamDegisti = () => {
+    // Esc ile tam ekrandan çıkıldıysa bir önceki moda dön.
+    if (!tamEkranAcikMi() && ui.ekranModu() === 'tam') HO.depo.ayarla('ekranModu', HO.depo.ayarlar.oncekiEkranModu || 'normal');
+    yenidenOlc();
+  };
+  document.addEventListener('fullscreenchange', tamDegisti);
+  document.addEventListener('webkitfullscreenchange', tamDegisti);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && ekran.tauriTam) tamEkranKapat().then(tamDegisti);
+  });
+
+  async function modSec(yeni) {
+    const eski = ui.ekranModu();
+    if (yeni === eski) yeni = eski === 'tam' ? HO.depo.ayarlar.oncekiEkranModu || 'normal' : 'normal';
+    if (yeni === 'tam') {
+      HO.depo.ayarla('oncekiEkranModu', eski === 'tam' ? 'normal' : eski);
+      HO.depo.ayarla('ekranModu', 'tam');
+      if (!(await tamEkranAc())) {
+        HO.depo.ayarla('ekranModu', 'genis');
+        if (ekran.bilgiKap) ekran.bilgiKap.textContent = 'Tam ekran açılamadı; geniş görünüm kullanılıyor.';
+      }
+    } else {
+      HO.depo.ayarla('ekranModu', yeni);
+      if (tamEkranAcikMi()) await tamEkranKapat();
+    }
+    ekranUygula();
+  }
+
+  const IKON_GENIS = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="6" width="19" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="2"/></svg>';
+  const IKON_TAM = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  function ekranDugmeleri() {
+    const genis = el('button', { class: 'dugme ikincil kucuk ekran-dugme ekran-genis-dugme', type: 'button' });
+    const tam = el('button', { class: 'dugme ikincil kucuk ekran-dugme', type: 'button' });
+    genis.innerHTML = IKON_GENIS + '<span>Geniş</span>';
+    tam.innerHTML = IKON_TAM + '<span>Tam ekran</span>';
+    genis.addEventListener('click', () => modSec('genis'));
+    tam.addEventListener('click', () => modSec('tam'));
+    const tamVar = !!(document.fullscreenEnabled || document.webkitFullscreenEnabled || tauriPencere());
+    if (!tamVar) tam.hidden = true;
+    ekran.guncelle = () => {
+      const m = ui.ekranModu();
+      const tamAcik = m === 'tam' && tamEkranAcikMi();
+      genis.setAttribute('aria-pressed', String(m === 'genis'));
+      tam.setAttribute('aria-pressed', String(tamAcik));
+      genis.title = m === 'genis' ? 'Normal görünüme dön' : 'Egzersizi pencerenin tamamına yay';
+      tam.title = tamAcik ? 'Tam ekrandan çık (Esc)' : 'Egzersizi tüm ekranda aç';
+      tam.querySelector('span').textContent = tamAcik ? 'Tam ekrandan çık' : 'Tam ekran';
+    };
+    return [genis, tam];
+  }
+  // Egzersiz başlarken (Başla tıklaması sırasında çağrılır; tarayıcı tam ekranı yalnız tıklamayla açar).
+  function ekranBasla() {
+    if (ui.ekranModu() === 'tam' && !tamEkranAcikMi()) {
+      tamEkranAc().then((ok) => {
+        if (!ok) HO.depo.ayarla('ekranModu', 'genis');
+        if (ekran.aktif) ekranUygula();
+      });
+    }
+  }
+
   ui.egzersizCalistir = async function (kap, ex, ctx, o = {}) {
     const gunluk = !!o.gunluk;
     while (true) {
@@ -289,6 +429,7 @@
       const secim = await ctx.promise((res) => {
         basla.addEventListener('click', () => {
           ui.sesAc();
+          ekranBasla();
           res('basla');
         });
         if (atla) atla.addEventListener('click', () => res('atla'));
@@ -305,8 +446,14 @@
       const bitir = el('button', { class: 'dugme ikincil kucuk', text: 'Bitir' });
       const bilgi = el('div', { class: 'ust-bilgi' });
       const sahne = el('div', { class: 'sahne sahne-' + ex.id });
-      kap.replaceChildren(el('div', { class: 'egz-ust' }, el('strong', { text: ex.ad }), bilgi, bitir), sahne);
+      const ekranBilgi = el('div', { class: 'ekran-bilgi', role: 'status' });
+      kap.replaceChildren(
+        el('div', { class: 'egz-ekran' }, el('div', { class: 'egz-ust' }, el('strong', { text: ex.ad }), bilgi, ...ekranDugmeleri(), bitir), ekranBilgi, sahne)
+      );
       bitir.addEventListener('click', () => exCtx.abort());
+      ekran.aktif = true;
+      ekran.bilgiKap = ekranBilgi;
+      ekranUygula();
       ui.aktiflik(true);
       let sonuc = null;
       try {
@@ -315,6 +462,10 @@
         if (!HO.iptalMi(e)) throw e;
       } finally {
         ui.aktiflik(false);
+        ekran.aktif = false;
+        ekran.guncelle = null;
+        ekran.bilgiKap = null;
+        ekranUygula();
         // Egzersiz bitti ya da durdu: alan artık tıklanamaz (yarım kalan egzersiz çalışıyor gibi görünmesin).
         sahne.inert = true;
         sahne.classList.add('durdu');

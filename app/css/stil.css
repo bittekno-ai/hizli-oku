@@ -66,11 +66,15 @@ html,
 body {
   margin: 0;
 }
+html {
+  /* Geniş ve tam ekranda --olcek büyür; rem ile ölçülen her şey birlikte büyür. */
+  font-size: calc(100% * var(--olcek, 1));
+}
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, Roboto, 'Helvetica Neue', Arial, sans-serif;
   background: var(--zemin);
   color: var(--yazi);
-  font-size: 16px;
+  font-size: 1rem;
   line-height: 1.5;
   min-height: 100vh;
 }
@@ -483,7 +487,7 @@ select {
 .schulte {
   display: grid;
   gap: 4px;
-  width: min(80vh, 92vw, 620px);
+  width: min(80vh, 92vw, 38.75rem);
   aspect-ratio: 1;
   position: relative;
 }
@@ -511,9 +515,9 @@ select {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 10px;
-  height: 10px;
-  margin: -5px 0 0 -5px;
+  width: 0.625rem;
+  height: 0.625rem;
+  margin: -0.3125rem 0 0 -0.3125rem;
   border-radius: 50%;
   background: var(--vurgu2);
   pointer-events: none;
@@ -548,7 +552,7 @@ select {
 }
 .kelime-sec {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
   gap: 0.3rem;
 }
 
@@ -602,7 +606,7 @@ select {
   gap: 1.5rem;
 }
 .flas-kutu {
-  min-width: min(560px, 90vw);
+  min-width: min(35rem, 90vw);
   height: 6rem;
   display: flex;
   align-items: center;
@@ -640,7 +644,7 @@ select {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.6rem;
-  width: min(560px, 92vw);
+  width: min(35rem, 92vw);
   min-height: 6.2rem; /* düğmeler gelince kutu yerinden oynamasın */
 }
 .flas-secimler .dugme {
@@ -655,7 +659,7 @@ select {
   border: 2px solid var(--vurgu);
   background: var(--yuzey);
   color: var(--yazi);
-  width: min(420px, 85vw);
+  width: min(26.25rem, 85vw);
 }
 .flas-geri {
   min-height: 1.6em;
@@ -711,7 +715,7 @@ select {
 .rsvp-kutu {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
-  width: min(700px, 94vw);
+  width: min(43.75rem, 94vw);
   font-size: 2.6rem;
   font-weight: 500;
   padding: 0.4rem 0;
@@ -728,11 +732,11 @@ select {
 }
 .rsvp-isaret {
   width: 2px;
-  height: 14px;
+  height: 0.875rem;
   background: var(--vurgu2);
 }
 .rsvp-ilerleme {
-  width: min(700px, 94vw);
+  width: min(43.75rem, 94vw);
   height: 4px;
   background: var(--cizgi);
   border-radius: 2px;
@@ -1188,7 +1192,7 @@ span.burdon-harf {
   border: 1px solid var(--cizgi);
   border-radius: var(--yaricap);
   padding: 1rem 2rem;
-  min-width: min(520px, 90vw);
+  min-width: min(32.5rem, 90vw);
   text-align: center;
 }
 .renk-geri {

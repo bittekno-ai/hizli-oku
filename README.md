@@ -8,6 +8,7 @@
 - **Günlük antrenman (13 adım, yaklaşık 25 dk):** Bir dikkat ısınması, dört göz takibi, flaş, çevresel görme, beliren kelimeler ve beş okuma adımı. Desenler günden güne değişir. Seviye testi günü son adım seviye testidir.
 - **Haftalık anlama testi:** Okuma egzersizlerinin sonunda soru sorulmaz. Haftanın 5. antrenman gününün sonunda, o hafta okunan metinlerden sorular gelir (metin başına 2, en çok 20 soru). Sonuç %70'in altındaysa rehberli okumanın otomatik hızı bir basamak düşer.
 - **Hız ayarı:** Hızlı egzersizlerin hepsinde hız 1x ile 10x arasında seçilir (1x en yavaş). Okuma egzersizlerinde 1x = 150, her basamak +50 kelime/dk (10x = 600).
+- **Geniş ve tam ekran:** Egzersiz ekranının üstündeki **Geniş** düğmesi egzersizi pencerenin tamamına yayar, **Tam ekran** düğmesi tüm ekranı kaplar (çıkmak için Esc ya da aynı düğme). Büyük ekranda harfler, tablolar ve kutular ekrana göre büyür. Seçim hatırlanır; sonraki egzersizler aynı görünümde açılır.
 - **Egzersizler:**
   - Schulte tablosu
   - Burdon dikkat testi

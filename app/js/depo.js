@@ -14,6 +14,7 @@
       gozMolasi: true,
       hareket: 'sistem', // sistem | acik | az
       epilepsiGizle: false,
+      ekranModu: 'normal', // normal | genis | tam (egzersiz ekranı)
       egz: {}, // egzersiz başına son seçilen seçenekler
     },
     sonuclar: [],
